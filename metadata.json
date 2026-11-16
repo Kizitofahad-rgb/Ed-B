@@ -1,0 +1,6 @@
+{
+  "name": "Ed-Bridge",
+  "description": "Ed-Bridge connects Makerere University students with verified supporters, communities, opportunities, and transparent impact.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

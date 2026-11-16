@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="24"
+        android:translateY="24">
+        <!-- Graduation Cap & Connected Bridge / Network Nodes (60x60 within 108 canvas) -->
+        <!-- Cap Top -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M30,8 L5,20 L30,32 L55,20 Z" />
+        <!-- Cap Base & Tassel -->
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:pathData="M14,24.5 L14,37 C14,44 21,50 30,50 C39,50 46,44 46,37 L46,24.5 L30,32 Z" />
+        <path
+            android:fillColor="#FFEDE9FE"
+            android:pathData="M52,21.5 L52,38 C50,38 48,40 48,42 C48,44 50,46 52,46 C54,46 56,44 56,42 C56,40 54,38 52,38 L52,21.5 Z" />
+    </group>
+</vector>

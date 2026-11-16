@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#3B52D4</color>
+    <color name="primary_dark">#2638A2</color>
+    <color name="connection">#8B5CF6</color>
+    <color name="cyan">#06B6D4</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="background_light">#F8FAFC</color>
+    <color name="surface_light">#FFFFFF</color>
+</resources>
