@@ -1,136 +1,176 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-import { AppShell, PageHeader } from "@/components/edbridge/AppShell";
-import { RequestCard } from "@/components/edbridge/pieces";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { createFileRoute } from "@tanstack/react-router";
+import { BadgeCheck, FilterX, Search, Shield, X } from "lucide-react";
+import { AppShell } from "@/components/edbridge/AppShell";
+import { EmptyStateCard, SectionHeader, SupportRequestCard } from "@/components/edbridge/pieces";
 import { peopleById } from "@/lib/edbridge/data";
 import { useEdBridge } from "@/lib/edbridge/store";
+import type { SupportType } from "@/lib/edbridge/types";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/explore-support")({
   head: () => ({
-    meta: [
-      { title: "Explore Support — Ed-Bridge" },
-      {
-        name: "description",
-        content:
-          "Browse verified Makerere student support requests: tuition, resources, mentorship, opportunities and more.",
-      },
-      { property: "og:title", content: "Explore Support — Ed-Bridge" },
-      {
-        property: "og:description",
-        content:
-          "Verified student needs you can meet with money, mentorship, resources or a referral.",
-      },
-    ],
+    meta: [{ title: "Verified Support Board — Ed-Bridge" }],
   }),
-  component: ExploreSupport,
+  component: ExploreSupportScreen,
 });
 
-function ExploreSupport() {
+const categories = [
+  "All",
+  "Tuition",
+  "Accommodation",
+  "Laptop / Equipment",
+  "Mentorship",
+  "Career / Internship",
+];
+
+const supportTypes: { value: SupportType; label: string }[] = [
+  { value: "financial", label: "Financial" },
+  { value: "mentorship", label: "Mentorship" },
+  { value: "resource", label: "Resource" },
+  { value: "opportunity", label: "Opportunity" },
+  { value: "referral", label: "Referral" },
+  { value: "amplification", label: "Amplification" },
+];
+
+function ExploreSupportScreen() {
   const { requests } = useEdBridge();
-  const [q, setQ] = useState("");
-  const [category, setCategory] = useState("all");
-  const [college, setCollege] = useState("all");
-  const [status, setStatus] = useState("all");
+  const [query, setQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSupportType, setSelectedSupportType] = useState<SupportType | null>(null);
+  const [onlyShielded, setOnlyShielded] = useState(false);
+  const [onlyVerified, setOnlyVerified] = useState(true);
 
-  const categories = useMemo(
-    () => Array.from(new Set(requests.map((r) => r.category))),
-    [requests],
-  );
-  const colleges = useMemo(
-    () =>
-      Array.from(
-        new Set(requests.map((r) => peopleById[r.personId]?.college).filter(Boolean) as string[]),
-      ),
-    [requests],
-  );
-
-  const filtered = requests.filter((r) => {
-    const person = peopleById[r.personId];
-    return (
-      (category === "all" || r.category === category) &&
-      (college === "all" || person?.college === college) &&
-      (status === "all" || r.status === status) &&
-      (q === "" ||
-        r.title.toLowerCase().includes(q.toLowerCase()) ||
-        (person?.name ?? "").toLowerCase().includes(q.toLowerCase()))
-    );
-  });
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return requests.filter((req) => {
+      const personName = peopleById[req.personId]?.name ?? "";
+      const matchesQuery =
+        !q ||
+        req.title.toLowerCase().includes(q) ||
+        req.need.toLowerCase().includes(q) ||
+        req.aliasLabel.toLowerCase().includes(q) ||
+        personName.toLowerCase().includes(q);
+      const matchesCat = selectedCategory === "All" || req.category === selectedCategory;
+      const matchesType = !selectedSupportType || req.supportTypes.includes(selectedSupportType);
+      const matchesShield = !onlyShielded || req.disclosureLevel === "shielded-alias";
+      const matchesStatus = !onlyVerified || req.status === "verified";
+      return matchesQuery && matchesCat && matchesType && matchesShield && matchesStatus;
+    });
+  }, [requests, query, selectedCategory, selectedSupportType, onlyShielded, onlyVerified]);
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <PageHeader
-          eyebrow="Explore support"
-          title="Verified student needs at Makerere"
-          subtitle="Every request shows exactly what it needs — and every request accepts more than money."
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 px-4 py-4 sm:px-6 sm:py-6">
+        <SectionHeader
+          title="Verified Support Board"
+          subtitle={`${filtered.length} active requests · Financial or non-cash help`}
         />
 
-        <div className="mb-8 grid gap-3 rounded-2xl border border-border/70 bg-card p-4 shadow-[var(--shadow-card)] sm:grid-cols-2 lg:grid-cols-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search requests…"
-              className="pl-9"
-            />
-          </div>
-          <Select value={category} onValueChange={setCategory}>
-            <SelectTrigger>
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All categories</SelectItem>
-              {categories.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={college} onValueChange={setCollege}>
-            <SelectTrigger>
-              <SelectValue placeholder="College" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All colleges</SelectItem>
-              {colleges.map((c) => (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={status} onValueChange={setStatus}>
-            <SelectTrigger>
-              <SelectValue placeholder="Verification" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Any status</SelectItem>
-              <SelectItem value="verified">Verified</SelectItem>
-              <SelectItem value="pending">Pending review</SelectItem>
-              <SelectItem value="needs-info">Needs more information</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search tuition, hostel, laptop, CoCIS…"
+            className="h-12 w-full rounded-[14px] border border-border bg-card pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+          />
+          {query ? (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg p-1 text-muted-foreground hover:bg-secondary"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((r) => (
-            <RequestCard key={r.id} request={r} />
+        {/* Category pills */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={cn(
+                "shrink-0 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors",
+                selectedCategory === cat
+                  ? "border-primary bg-primary/20 text-foreground"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {cat}
+            </button>
           ))}
         </div>
-        {filtered.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-border p-12 text-center text-muted-foreground">
-            No requests match these filters yet.
+
+        {/* Privacy & Support type quick toggles */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <button
+            type="button"
+            onClick={() => setOnlyShielded((v) => !v)}
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors",
+              onlyShielded
+                ? "border-[#6366F1] bg-[#E0E7FF] text-[#312E81]"
+                : "border-border bg-card text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <Shield className="h-3.5 w-3.5" /> Shielded Alias Only
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOnlyVerified((v) => !v)}
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors",
+              onlyVerified
+                ? "border-primary bg-primary/20 text-foreground"
+                : "border-border bg-card text-muted-foreground hover:text-foreground",
+            )}
+          >
+            <BadgeCheck className="h-3.5 w-3.5 text-primary" /> Verified Only
+          </button>
+
+          {supportTypes.map((t) => (
+            <button
+              key={t.value}
+              type="button"
+              onClick={() => setSelectedSupportType((prev) => (prev === t.value ? null : t.value))}
+              className={cn(
+                "shrink-0 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors",
+                selectedSupportType === t.value
+                  ? "border-primary bg-primary/20 text-foreground"
+                  : "border-border bg-card text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {filtered.length === 0 ? (
+          <EmptyStateCard
+            icon={FilterX}
+            title="No matching requests"
+            subtitle="Try clearing your search or toggling off one of the filters to see more verified students."
+            actionLabel="Reset all filters"
+            onAction={() => {
+              setQuery("");
+              setSelectedCategory("All");
+              setSelectedSupportType(null);
+              setOnlyShielded(false);
+              setOnlyVerified(false);
+            }}
+          />
+        ) : (
+          <div className="space-y-3">
+            {filtered.map((req) => (
+              <SupportRequestCard key={req.id} request={req} />
+            ))}
           </div>
         )}
       </div>

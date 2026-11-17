@@ -29,7 +29,9 @@ export const SupportRequestSchema = z.object({
   resourceNeeded: z.string().optional(),
   deadlineDays: z.number().int().min(1).max(90),
   supportTypes: z
-    .array(z.enum(["financial", "mentorship", "resource", "opportunity", "referral", "amplification"]))
+    .array(
+      z.enum(["financial", "mentorship", "resource", "opportunity", "referral", "amplification"]),
+    )
     .min(1, "Select at least one support type requested"),
 });
 

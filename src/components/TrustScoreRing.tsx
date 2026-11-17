@@ -1,64 +1,57 @@
-import { ShieldCheck } from "lucide-react";
-
 interface Props {
-  score: number; // 0-100
+  score: number;
   size?: number;
-  label?: string;
-  tier?: string;
   className?: string;
 }
 
-export function TrustScoreRing({
-  score,
-  size = 120,
-  label = "Trust score",
-  tier,
-  className,
-}: Props) {
-  const r = (size - 12) / 2;
+export function TrustScoreRing({ score, size = 112, className }: Props) {
+  const clamped = Math.max(0, Math.min(100, score));
+  const strokeWidth = 10;
+  const r = (size - strokeWidth) / 2;
   const c = 2 * Math.PI * r;
-  const offset = c - (score / 100) * c;
-  const tone =
-    score >= 90
-      ? "text-success"
-      : score >= 75
-        ? "text-primary"
-        : score >= 50
-          ? "text-warning"
-          : "text-destructive";
+  const offset = c - (clamped / 100) * c;
 
   return (
-    <div className={`relative inline-flex flex-col items-center ${className ?? ""}`}>
+    <div
+      className={`relative inline-flex shrink-0 items-center justify-center ${className ?? ""}`}
+      style={{ width: size, height: size }}
+    >
       <svg width={size} height={size} className="-rotate-90">
+        <defs>
+          <linearGradient id="edbridge-trust-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8B9EFF" />
+            <stop offset="50%" stopColor="#7C3AED" />
+            <stop offset="100%" stopColor="#34D399" />
+          </linearGradient>
+        </defs>
         <circle
           cx={size / 2}
           cy={size / 2}
           r={r}
-          className="fill-none stroke-secondary"
-          strokeWidth={8}
+          fill="none"
+          className="stroke-primary/20"
+          strokeWidth={strokeWidth}
         />
         <circle
           cx={size / 2}
           cy={size / 2}
           r={r}
-          className={`fill-none ${tone} transition-all duration-700`}
-          stroke="currentColor"
-          strokeWidth={8}
+          fill="none"
+          stroke="url(#edbridge-trust-grad)"
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={c}
           strokeDashoffset={offset}
+          className="transition-all duration-700"
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <ShieldCheck className={`h-4 w-4 ${tone}`} />
-        <div className="text-2xl font-semibold leading-none">{score}</div>
-        <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-          / 100
-        </div>
-      </div>
-      <div className="mt-2 text-center">
-        <div className="text-xs font-medium">{label}</div>
-        {tier && <div className="text-[11px] text-muted-foreground">{tier} tier</div>}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <span className="text-2xl font-extrabold leading-none text-primary tabular-nums">
+          {clamped}
+        </span>
+        <span className="mt-1 text-[9px] font-bold tracking-wider text-muted-foreground">
+          TRUST SCORE
+        </span>
       </div>
     </div>
   );

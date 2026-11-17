@@ -1,272 +1,357 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowRight,
   BadgeCheck,
-  Briefcase,
+  Building2,
+  CheckCircle2,
+  EyeOff,
+  GraduationCap,
+  Handshake,
   HeartHandshake,
-  Laptop,
-  Lightbulb,
-  Network,
+  Landmark,
+  MinusCircle,
+  Shield,
   ShieldCheck,
-  Sparkles,
   Users,
 } from "lucide-react";
 import { AppShell } from "@/components/edbridge/AppShell";
 import { NetworkGraph } from "@/components/edbridge/NetworkGraph";
-import { CommunityCard, RequestCard, StatTile } from "@/components/edbridge/pieces";
+import { SectionHeader, SupportRequestCard } from "@/components/edbridge/pieces";
 import { Button } from "@/components/ui/button";
-import { communities, supportRequests, campaign } from "@/lib/edbridge/data";
+import { campaign } from "@/lib/edbridge/data";
+import { useEdBridge } from "@/lib/edbridge/store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Ed-Bridge — Connect. Support. Grow." },
+      { title: "Ed-Bridge — Students stay in school without public begging." },
       {
         name: "description",
         content:
-          "Ed-Bridge connects Makerere students with the people, communities and opportunities that can help them move forward.",
-      },
-      { property: "og:title", content: "Ed-Bridge — Connect. Support. Grow." },
-      {
-        property: "og:description",
-        content:
-          "A trusted student support and opportunity network, starting at Makerere University.",
+          "Ed-Bridge turns your real academic communities at Makerere University into a verified, private safety net.",
       },
     ],
   }),
-  component: Landing,
+  component: HomeScreen,
 });
 
-const ways = [
-  {
-    icon: HeartHandshake,
-    title: "Financial support",
-    body: "Help clear a verified tuition or accommodation balance.",
-  },
-  {
-    icon: Lightbulb,
-    title: "Mentorship",
-    body: "Give a student a few hours of guidance in your field.",
-  },
-  {
-    icon: Laptop,
-    title: "Resources",
-    body: "Lend or donate a laptop, textbooks or lab equipment.",
-  },
-  {
-    icon: Briefcase,
-    title: "Opportunities",
-    body: "Refer an internship, scholarship or part-time role.",
-  },
-  {
-    icon: Users,
-    title: "Referrals",
-    body: "Introduce a student to someone who can actually help.",
-  },
-  {
-    icon: Network,
-    title: "Amplification",
-    body: "Share a verified need with a community that can respond.",
-  },
-];
+function HomeScreen() {
+  const { requests, setRole } = useEdBridge();
+  const navigate = useNavigate();
+  const [selectedCompareTab, setSelectedCompareTab] = useState(0);
 
-function Landing() {
+  const verifiedRequests = requests.filter((r) => r.status === "verified");
+  const campaignPct = Math.round((campaign.supportedStudents / campaign.goalStudents) * 100);
+
   return (
     <AppShell>
-      <section className="relative overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[image:var(--gradient-soft)]" />
-        <div className="pointer-events-none absolute -right-32 -top-32 -z-10 h-[420px] w-[420px] rounded-full bg-connection/10 blur-3xl" />
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:py-24">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5 text-connection" /> Starting at Makerere University
-            </span>
-            <h1 className="mt-5 text-balance text-5xl font-semibold tracking-tight sm:text-6xl">
-              Connect. Support.{" "}
-              <span className="bg-[image:var(--gradient-hero)] bg-clip-text text-transparent">
-                Grow.
-              </span>
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Ed-Bridge connects students with the people, communities and opportunities that can
-              help them move forward.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link to="/explore-support">
-                  Explore Ed-Bridge <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/about">See how it works</Link>
-              </Button>
-            </div>
-            <p className="mt-6 text-sm font-medium text-connection">"We rise by lifting others."</p>
-          </div>
-          <NetworkGraph centerLabel="Student" />
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr] lg:items-center">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight">
-              The problem is rarely only money
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              A student who misses exam registration by UGX 350,000 usually knows nobody who can
-              help — even though someone in their college, their course or their old secondary
-              school could. Crowdfunding sends strangers a link. Ed-Bridge surfaces the people
-              already connected to that student.
-            </p>
-            <ul className="mt-6 space-y-3 text-sm">
-              {[
-                "Verified student needs, not anonymous appeals",
-                "Support that can be money, mentorship, a laptop or an introduction",
-                "Communities — colleges, courses, school alumni — as the unit of trust",
-              ].map((t) => (
-                <li key={t} className="flex items-start gap-2">
-                  <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-success" /> {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <StatTile label="Students supported" value={216} icon={Users} />
-            <StatTile label="Mentorship sessions" value={462} icon={Lightbulb} />
-            <StatTile label="Opportunities shared" value={172} icon={Briefcase} />
-            <StatTile label="Communities" value={communities.length} icon={Network} />
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-border/60 bg-secondary/30 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-3xl font-semibold tracking-tight">How it works</h2>
-          <div className="mt-8 grid gap-5 md:grid-cols-4">
-            {[
-              [
-                "Join your communities",
-                "College, course, secondary school alumni and student organizations.",
-              ],
-              [
-                "See who is around you",
-                "Discover people connected to you by verified shared background.",
-              ],
-              [
-                "Give or receive support",
-                "Money, mentorship, resources, opportunities or a referral.",
-              ],
-              [
-                "Build a verified record",
-                "Every action becomes a traceable entry in your Impact Passport.",
-              ],
-            ].map(([title, body], i) => (
-              <div
-                key={title}
-                className="rounded-2xl border border-border/70 bg-card p-5 shadow-[var(--shadow-card)]"
-              >
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-connection/10 text-sm font-semibold text-connection">
-                  {i + 1}
-                </span>
-                <h3 className="mt-3 font-semibold">{title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <h2 className="text-3xl font-semibold tracking-tight">Different ways to support</h2>
-        <p className="mt-2 text-muted-foreground">
-          You do not need money to change a student's semester.
-        </p>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {ways.map((w) => (
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-4 sm:px-6 sm:py-6">
+        {/* 1. Hero Card matching HomeScreen.kt & live preview screenshot */}
+        <section className="overflow-hidden rounded-[22px] border border-border bg-card shadow-[var(--shadow-card)]">
+          <div className="relative h-44 w-full sm:h-52">
+            <img
+              src="/assets/edbridge/hero_student.jpg"
+              alt="Makerere University students collaborating"
+              className="h-full w-full object-cover"
+            />
             <div
-              key={w.title}
-              className="rounded-2xl border border-border/70 bg-card p-5 shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1"
-            >
-              <w.icon className="h-5 w-5 text-primary" />
-              <h3 className="mt-3 font-semibold">{w.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{w.body}</p>
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-b from-[#0F172A]/35 via-[#0F172A]/65 to-[#0F172A]/90"
+            />
+            <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E0E7FF]/95 px-2.5 py-1 text-[11px] font-bold text-[#312E81]">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Starting at Makerere · Relational &amp; Shielded Aid
+              </span>
+              <h1 className="font-display mt-2 text-xl font-extrabold leading-tight text-white sm:text-2xl">
+                Students stay in school without public begging.
+              </h1>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
 
-      <section className="border-y border-border/60 bg-secondary/30 py-16">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="p-4 sm:p-5">
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Ed-Bridge turns your real academic communities (College, Course, Secondary School
+              Alumni) into a verified, private safety net for tuition, sustenance, mentorship,
+              equipment, and paid work.
+            </p>
+            <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+              <Button
+                onClick={() => navigate({ to: "/explore-support" })}
+                className="h-12 rounded-xl text-sm font-semibold"
+              >
+                <HeartHandshake className="h-4.5 w-4.5" />
+                Help a Student
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setRole("student");
+                  navigate({ to: "/student" });
+                }}
+                className="h-12 rounded-xl text-sm font-semibold"
+              >
+                <Shield className="h-4.5 w-4.5" />
+                Seek Quiet Aid
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. Explore by Perspective */}
+        <section>
+          <SectionHeader
+            title="Explore by Perspective"
+            subtitle="Switch roles instantly to experience the full platform"
+          />
+          <div className="mt-2.5 grid grid-cols-3 gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                setRole("student");
+                navigate({ to: "/student" });
+              }}
+              className="flex flex-col items-start rounded-[14px] border border-border bg-card p-3 text-left transition-colors hover:border-primary/50"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-primary">
+                <GraduationCap className="h-4 w-4" />
+              </span>
+              <span className="mt-2 text-xs font-bold text-foreground sm:text-sm">Student</span>
+              <span className="mt-0.5 text-[11px] text-muted-foreground">Shielded Request</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setRole("supporter");
+                navigate({ to: "/supporter" });
+              }}
+              className="flex flex-col items-start rounded-[14px] border border-border bg-card p-3 text-left transition-colors hover:border-[var(--connection)]/50"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--connection)]/15 text-[var(--connection)]">
+                <Handshake className="h-4 w-4" />
+              </span>
+              <span className="mt-2 text-xs font-bold text-foreground sm:text-sm">Supporter</span>
+              <span className="mt-0.5 text-[11px] text-muted-foreground">Impact Passport</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setRole("organization");
+                navigate({ to: "/organization" });
+              }}
+              className="flex flex-col items-start rounded-[14px] border border-border bg-card p-3 text-left transition-colors hover:border-[var(--success)]/50"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--success)]/15 text-[var(--success)]">
+                <Building2 className="h-4 w-4" />
+              </span>
+              <span className="mt-2 text-xs font-bold text-foreground sm:text-sm">Org SaaS</span>
+              <span className="mt-0.5 text-[11px] text-muted-foreground">Cohort Tools</span>
+            </button>
+          </div>
+        </section>
+
+        {/* 3. Dignified & Shielded Aid Explainer */}
+        <section
+          className="rounded-[18px] border border-[#312E81]/25 p-4 sm:p-5"
+          style={{
+            backgroundColor: "var(--shield-bg)",
+            color: "var(--shield-fg)",
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#312E81] text-white">
+              <EyeOff className="h-4.5 w-4.5" />
+            </span>
             <div>
-              <h2 className="text-3xl font-semibold tracking-tight">The community network</h2>
-              <p className="mt-2 text-muted-foreground">
-                Communities rank by students helped — never by money raised.
+              <h2 className="text-sm font-bold sm:text-base">
+                Need Tuition Without Public Exposure?
+              </h2>
+              <p className="text-xs opacity-80">
+                Built for students protecting dignity &amp; privacy
               </p>
             </div>
-            <Button asChild variant="outline">
-              <Link to="/explore-communities">All communities</Link>
-            </Button>
           </div>
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {communities.slice(0, 3).map((c) => (
-              <CommunityCard key={c.id} community={c} />
-            ))}
-          </div>
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight">Verified student needs</h2>
-            <p className="mt-2 text-muted-foreground">
-              Each request passes identity, student status, document and human review.
-            </p>
-          </div>
-          <Button asChild variant="outline">
-            <Link to="/explore-support">Explore all support</Link>
-          </Button>
-        </div>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {supportRequests.slice(0, 3).map((r) => (
-            <RequestCard key={r.id} request={r} />
-          ))}
-        </div>
-      </section>
+          <ul className="mt-3 space-y-2 text-xs leading-relaxed">
+            <li className="flex items-start gap-2">
+              <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                <strong>Shielded Alias (#EB-402):</strong> Ed-Bridge verifies your Makerere ID &amp;
+                fee invoice privately, then hides your name &amp; photo from classmates.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Users className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                <strong>Alumni-Only Audience Scope:</strong> Route requests strictly to verified
+                alumni &amp; mentors — never your current class feed.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Landmark className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                <strong>Direct Bursar &amp; Hostel Settlement:</strong> Supporters settle invoices
+                directly with Makerere Bursar or vendors, eliminating skepticism.
+              </span>
+            </li>
+          </ul>
+        </section>
 
-      <section className="border-t border-border/60 bg-secondary/30 py-16">
-        <div className="mx-auto grid max-w-7xl gap-8 px-6 lg:grid-cols-2 lg:items-center">
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight">Transparent impact</h2>
-            <p className="mt-3 text-muted-foreground">
-              The {campaign.name} campaign has supported {campaign.supportedStudents} of{" "}
-              {campaign.goalStudents} students, delivered {campaign.laptops} laptops and{" "}
-              {campaign.tablets} tablets, and logged {campaign.mentorshipSessions} mentorship
-              sessions this semester.
-            </p>
-            <p className="mt-3 inline-flex items-center gap-2 text-sm font-medium text-success">
-              <ShieldCheck className="h-4 w-4" /> Every contribution creates a traceable impact
-              record.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border/70 bg-card p-6 text-center shadow-[var(--shadow-card)]">
-            <h3 className="text-2xl font-semibold">Ready to see the network?</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Walk through the prototype as a student, supporter, community or organization.
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              <Button asChild size="lg">
-                <Link to="/onboarding">Start onboarding</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/supporter">I want to help</Link>
-              </Button>
+        {/* 4. Why Ed-Bridge Is Not Crowdfunding */}
+        <section>
+          <SectionHeader
+            title="Why Ed-Bridge Is Not Crowdfunding"
+            subtitle="Relational trust, non-cash help & ongoing retention"
+          />
+          <div className="mt-2.5 rounded-[18px] border border-border bg-card p-3.5 shadow-[var(--shadow-card)]">
+            <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-border bg-secondary/40">
+              {["Trust vs Viral", "Help Without Cash", "Retention & SaaS"].map((label, idx) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => setSelectedCompareTab(idx)}
+                  className={cn(
+                    "px-2 py-2.5 text-[11px] font-semibold transition-colors sm:text-xs",
+                    selectedCompareTab === idx
+                      ? "bg-primary/20 text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3 space-y-2">
+              {selectedCompareTab === 0 && (
+                <>
+                  <CompareRow
+                    title="Public Crowdfunding"
+                    body="Requires broadcasting your hardship to strangers on social media."
+                    isGood={false}
+                  />
+                  <CompareRow
+                    title="Ed-Bridge"
+                    body="Human-verified documents + Shielded Aliases routed to your college, course & high-school alumni."
+                    isGood={true}
+                  />
+                </>
+              )}
+              {selectedCompareTab === 1 && (
+                <>
+                  <CompareRow
+                    title="Cash-Only Sites"
+                    body="Leave you stuck if supporters cannot send mobile money today."
+                    isGood={false}
+                  />
+                  <CompareRow
+                    title="6 Ways to Help"
+                    body="Offer 1-on-1 mentorship, spare laptop loans, paid campus jobs, internships, warm referrals, or circle amplification."
+                    isGood={true}
+                  />
+                </>
+              )}
+              {selectedCompareTab === 2 && (
+                <>
+                  <CompareRow
+                    title="One-Time Disposal"
+                    body="Once a campaign ends, students and donors vanish forever."
+                    isGood={false}
+                  />
+                  <CompareRow
+                    title="Ongoing Attachment"
+                    body="Students return weekly for paid gigs, milestones & paying it forward; alumni get a Verified Impact Passport; orgs pay for Cohort SaaS."
+                    isGood={true}
+                  />
+                </>
+              )}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* 5. Verified Requests Right Now */}
+        <section>
+          <SectionHeader
+            title="Verified Requests Right Now"
+            subtitle="Notice shielded aliases, direct bursar tags & 1:1 alumni matches"
+            actionLabel="See all"
+            actionTo="/explore-support"
+          />
+          <div className="mt-2.5 space-y-3">
+            {verifiedRequests.slice(0, 3).map((req) => (
+              <SupportRequestCard key={req.id} request={req} />
+            ))}
+          </div>
+        </section>
+
+        {/* 6. Your Trusted Circle Graph */}
+        <section>
+          <SectionHeader
+            title="Your Trusted Circle Graph"
+            subtitle="How shared colleges & alumni communities unlock help"
+            actionLabel="Communities"
+            actionTo="/explore-communities"
+          />
+          <div className="mt-2.5 rounded-[18px] border border-border bg-card p-3.5 shadow-[var(--shadow-card)]">
+            <NetworkGraph interactive />
+          </div>
+        </section>
+
+        {/* 7. CoCIS Laptop & Bursar Shield Banner */}
+        <section className="rounded-[18px] border border-primary/25 bg-accent/55 p-4 dark:bg-[#20307A]/45">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-sm font-bold text-foreground sm:text-base">{campaign.name}</h2>
+            <span className="shrink-0 rounded-full bg-[#D1FAE5] px-2.5 py-0.5 text-[11px] font-bold text-[#064E3B] dark:bg-[#064E3B]/60 dark:text-[#6EE7B7]">
+              {campaign.supportedStudents}/{campaign.goalStudents} reached
+            </span>
+          </div>
+          <div className="mt-2.5 h-2 overflow-hidden rounded-full bg-white/80 dark:bg-secondary">
+            <div className="h-full rounded-full bg-primary" style={{ width: `${campaignPct}%` }} />
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-foreground/90">
+            {campaign.laptops} laptops · {campaign.tablets} tablets · {campaign.mentorshipSessions}{" "}
+            mentorship sessions backed by Mak Alumni &amp; Org Partners.
+          </p>
+          <div className="mt-3 grid grid-cols-2 gap-2.5">
+            <Button
+              variant="outline"
+              onClick={() => navigate({ to: "/opportunities" })}
+              className="h-11 rounded-xl"
+            >
+              Paid Gigs &amp; Aid
+            </Button>
+            <Button onClick={() => navigate({ to: "/onboarding" })} className="h-11 rounded-xl">
+              Join Verified
+            </Button>
+          </div>
+        </section>
+      </div>
     </AppShell>
+  );
+}
+
+function CompareRow({ title, body, isGood }: { title: string; body: string; isGood: boolean }) {
+  return (
+    <div
+      className={cn(
+        "flex items-start gap-2.5 rounded-xl p-2.5",
+        isGood
+          ? "bg-[#D1FAE5]/55 text-[#064E3B] dark:bg-[#064E3B]/40 dark:text-[#D1FAE5]"
+          : "bg-secondary/65 text-foreground",
+      )}
+    >
+      {isGood ? (
+        <CheckCircle2 className="mt-0.5 h-4.5 w-4.5 shrink-0 text-[var(--success)]" />
+      ) : (
+        <MinusCircle className="mt-0.5 h-4.5 w-4.5 shrink-0 text-muted-foreground" />
+      )}
+      <div>
+        <p className="text-xs font-bold">{title}</p>
+        <p className="mt-0.5 text-xs opacity-90">{body}</p>
+      </div>
+    </div>
   );
 }

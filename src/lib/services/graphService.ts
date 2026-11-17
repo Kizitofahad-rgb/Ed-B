@@ -46,7 +46,11 @@ export function getRecommendedConnections(currentUser: Person): ConnectionRation
       }
 
       // Mentorship offers match
-      if (other.role === "mentor" || other.role === "supporter" || other.offers.includes("mentorship")) {
+      if (
+        other.role === "mentor" ||
+        other.role === "supporter" ||
+        other.offers.includes("mentorship")
+      ) {
         reasons.push("Offers Mentorship & Guidance");
         score += 20;
       }

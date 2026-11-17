@@ -10,6 +10,12 @@ import {
 } from "@tanstack/react-router";
 import { Toaster } from "@/components/ui/sonner";
 import { EdBridgeProvider } from "@/lib/edbridge/store";
+import { ThemeProvider } from "@/lib/theme";
+import {
+  BrandMark,
+  EDBRIDGE_FAVICON_DATA_URI,
+  SplashScreenOverlay,
+} from "@/components/edbridge/BrandMark";
 
 import appCss from "../styles.css?url";
 
@@ -17,7 +23,10 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <div className="mb-4 flex justify-center">
+          <BrandMark size={44} />
+        </div>
+        <h1 className="font-display text-7xl font-bold tracking-tight text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           The page you're looking for doesn't exist or has been moved.
@@ -25,7 +34,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90"
           >
             Go home
           </Link>
@@ -42,7 +51,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <div className="mb-4 flex justify-center">
+          <BrandMark size={40} />
+        </div>
+        <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
           This page didn't load
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -54,13 +66,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary"
           >
             Go home
           </a>
@@ -75,16 +87,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Ed-Bridge — Connect. Support. Grow." },
+      { title: "Ed-Bridge — Connect · Support · Grow" },
       {
         name: "description",
         content:
-          "Ed-Bridge connects Makerere students with the people, communities and opportunities that can help them move forward.",
+          "Ed-Bridge turns real academic communities at Makerere University into a verified, private safety net for tuition, sustenance, mentorship, equipment, and paid work.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
+      { name: "theme-color", content: "#0A0F1E" },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "icon", type: "image/svg+xml", href: EDBRIDGE_FAVICON_DATA_URI },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap",
+      },
+      { rel: "stylesheet", href: appCss },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -94,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -111,10 +133,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <EdBridgeProvider>
-        <Outlet />
-        <Toaster richColors position="top-right" />
-      </EdBridgeProvider>
+      <ThemeProvider>
+        <EdBridgeProvider>
+          <SplashScreenOverlay />
+          <Outlet />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              className:
+                "border border-border bg-card text-foreground shadow-[var(--shadow-elegant)]",
+            }}
+          />
+        </EdBridgeProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

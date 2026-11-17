@@ -26,7 +26,13 @@ export const ROLE_PERMISSIONS: Record<AppRole, Permission[]> = {
   student: ["view_requests", "create_request", "access_impact_passport"],
   supporter: ["view_requests", "support_financially", "offer_mentorship", "access_impact_passport"],
   mentor: ["view_requests", "offer_mentorship", "access_impact_passport"],
-  alumni: ["view_requests", "support_financially", "offer_mentorship", "post_opportunity", "access_impact_passport"],
+  alumni: [
+    "view_requests",
+    "support_financially",
+    "offer_mentorship",
+    "post_opportunity",
+    "access_impact_passport",
+  ],
   community: ["view_requests", "manage_community", "access_impact_passport"],
   organization: ["view_requests", "post_opportunity", "support_financially"],
   admin: [
@@ -55,7 +61,10 @@ export interface AuthUser {
   isSystemAdmin: boolean;
 }
 
-export function canAccessRoute(role: AppRole, pathname: string): { allowed: boolean; redirectReason?: string } {
+export function canAccessRoute(
+  role: AppRole,
+  pathname: string,
+): { allowed: boolean; redirectReason?: string } {
   if (pathname.startsWith("/admin") && !hasPermission(role, "view_admin_queue")) {
     return {
       allowed: false,

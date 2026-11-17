@@ -21,8 +21,8 @@ const typeMeta: Record<ProofOfImpactItem["type"], { label: string; icon: typeof 
 };
 
 interface Props {
-  studentId?: string; // Filter to a specific student
-  uploadable?: boolean; // Show the uploader UI
+  studentId?: string;
+  uploadable?: boolean;
   className?: string;
 }
 
@@ -43,7 +43,7 @@ export function ProofOfImpact({ studentId, uploadable = false, className }: Prop
       title: file.name.replace(/\.[^.]+$/, ""),
       date: new Date().toISOString().slice(0, 10),
       fileLabel: file.name,
-      thumbColor: "from-primary/30 to-primary/5",
+      thumbColor: "from-[#A8F0C4]/25 to-transparent",
       verified: false,
     };
     setItems((arr) => [newItem, ...arr]);
@@ -55,7 +55,7 @@ export function ProofOfImpact({ studentId, uploadable = false, className }: Prop
     <section className={className}>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-semibold tracking-tight">Proof of Impact</h2>
+          <h2 className="font-display text-2xl font-semibold tracking-tight">Proof of Impact</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Receipts, transcripts, certificates and progress updates — uploaded by students,
             verified by Ed-Bridge.
@@ -87,8 +87,8 @@ export function ProofOfImpact({ studentId, uploadable = false, className }: Prop
       </div>
 
       {uploadable && (
-        <label className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-secondary/40 px-6 py-10 text-center text-sm text-muted-foreground transition-colors hover:bg-secondary">
-          <Upload className="h-5 w-5" />
+        <label className="mt-5 flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-border bg-secondary/40 px-6 py-10 text-center text-sm text-muted-foreground transition-colors hover:border-[#3FAE72] hover:bg-secondary">
+          <Upload className="h-5 w-5 text-[#3FAE72] dark:text-[#A8F0C4]" />
           <span>
             Drop a file or click to upload — PDF, JPG or PNG · {typeMeta[pickedType].label}
           </span>
@@ -102,20 +102,18 @@ export function ProofOfImpact({ studentId, uploadable = false, className }: Prop
           return (
             <article
               key={it.id}
-              className="group overflow-hidden rounded-2xl border border-border/70 bg-card shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[var(--shadow-elegant)]"
+              className="group overflow-hidden rounded-2xl border border-border/80 bg-card shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1 hover:border-[#3FAE72]/45 hover:shadow-[var(--shadow-elegant)]"
             >
-              <div
-                className={`relative flex h-28 items-center justify-center bg-gradient-to-br ${it.thumbColor}`}
-              >
-                <Icon className="h-10 w-10 text-foreground/70" />
+              <div className="relative flex h-28 items-center justify-center bg-gradient-to-br from-[#A8F0C4]/25 via-secondary/60 to-transparent">
+                <Icon className="h-10 w-10 text-[#15181A]/70 dark:text-[#E9EDEB]/80" />
                 <span className="absolute right-3 top-3">
                   {it.verified ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-success/20 px-2 py-0.5 text-[11px] font-medium text-success">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#3FAE72]/15 px-2.5 py-0.5 text-[11px] font-medium text-[#2B8A57] dark:bg-[#A8F0C4]/15 dark:text-[#A8F0C4]">
                       <BadgeCheck className="h-3 w-3" /> Verified
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-warning/20 px-2 py-0.5 text-[11px] font-medium text-foreground">
-                      <Clock className="h-3 w-3" /> Pending
+                    <span className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-foreground">
+                      <Clock className="h-3 w-3 text-[#5C6663]" /> Pending
                     </span>
                   )}
                 </span>
@@ -134,7 +132,7 @@ export function ProofOfImpact({ studentId, uploadable = false, className }: Prop
                 <div className="mt-3 flex items-center justify-between text-xs">
                   <span className="truncate text-muted-foreground">{it.fileLabel}</span>
                   {it.amountVerified ? (
-                    <span className="font-medium text-success">
+                    <span className="font-semibold text-[#2B8A57] dark:text-[#A8F0C4]">
                       ${it.amountVerified.toLocaleString()}
                     </span>
                   ) : null}

@@ -34,10 +34,26 @@ export interface Person {
   verified: boolean;
   trustScore: number;
   bio: string;
+  photoKey?: string;
 }
 
 export type SupportType =
   "financial" | "mentorship" | "resource" | "opportunity" | "referral" | "amplification";
+
+export type DisclosureLevel = "shielded-alias" | "circle-trusted" | "public-verified";
+
+export type AudienceScope = "alumni-mentors-only" | "my-communities" | "full-network";
+
+export type DisbursementMode = "direct-bursar" | "direct-vendor" | "milestone-stipend";
+
+export interface RequestUpdate {
+  id: string;
+  authorLabel: string;
+  date: string;
+  milestoneTag: string;
+  message: string;
+  isGratitude?: boolean;
+}
 
 export type RequestCategory =
   | "Tuition"
@@ -67,6 +83,12 @@ export interface SupportRequest {
   status: VerificationState;
   checks: { identity: boolean; studentStatus: boolean; documents: boolean; humanReview: boolean };
   createdAt: string;
+  disclosureLevel: DisclosureLevel;
+  audienceScope: AudienceScope;
+  disbursementMode: DisbursementMode;
+  aliasLabel: string;
+  matchingSponsor?: string;
+  updates: RequestUpdate[];
 }
 
 export interface Opportunity {
@@ -82,6 +104,7 @@ export interface Opportunity {
     | "Training"
     | "Hackathon";
   location: string;
+  compensation: string;
   closesInDays: number;
   summary: string;
   matchReason: string;
@@ -97,6 +120,7 @@ export interface Organization {
   mentorshipSessions: number;
   opportunitiesCreated: number;
   blurb: string;
+  planTier: string;
 }
 
 export type Privacy = "private" | "recognized" | "public";
@@ -123,4 +147,17 @@ export interface Recommendation {
   personId: string;
   relevance: number;
   reasons: string[];
+}
+
+export interface ProofOfImpactRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  type: "fee_receipt" | "academic_report" | "certificate" | "progress_update";
+  title: string;
+  date: string;
+  fileLabel: string;
+  amountVerified?: number;
+  note?: string;
+  verified: boolean;
 }

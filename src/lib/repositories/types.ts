@@ -14,12 +14,18 @@ export interface ISupportRequestRepository {
   getAll(): Promise<SupportRequest[]>;
   getById(id: string): Promise<SupportRequest | null>;
   create(
-    request: Omit<SupportRequest, "id" | "personId" | "supporters" | "status" | "checks" | "createdAt">,
+    request: Omit<
+      SupportRequest,
+      "id" | "personId" | "supporters" | "status" | "checks" | "createdAt"
+    >,
     authorId: string,
   ): Promise<SupportRequest>;
   updateStatus(id: string, status: VerificationState): Promise<SupportRequest | null>;
   recordFinancialSupport(id: string, amount: number): Promise<SupportRequest | null>;
-  recordOtherSupport(id: string, type: Exclude<SupportType, "financial">): Promise<SupportRequest | null>;
+  recordOtherSupport(
+    id: string,
+    type: Exclude<SupportType, "financial">,
+  ): Promise<SupportRequest | null>;
 }
 
 export interface IUserRepository {

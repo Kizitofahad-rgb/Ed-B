@@ -11,7 +11,7 @@ interface Props {
 
 export function AnimatedCounter({
   value,
-  duration = 1600,
+  duration = 1400,
   prefix = "",
   suffix = "",
   decimals = 0,
@@ -22,6 +22,15 @@ export function AnimatedCounter({
   const started = useRef(false);
 
   useEffect(() => {
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced) {
+      setDisplay(value);
+      return;
+    }
+
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(
@@ -40,7 +49,7 @@ export function AnimatedCounter({
           }
         });
       },
-      { threshold: 0.3 },
+      { threshold: 0.25 },
     );
     io.observe(el);
     return () => io.disconnect();

@@ -16,11 +16,11 @@ export function VerificationBadge({
     return (
       <span
         className={cn(
-          "inline-flex items-center gap-1 rounded-full bg-warning/15 px-2.5 py-1 text-xs font-medium text-foreground",
+          "inline-flex items-center gap-1 rounded-full border border-border bg-secondary px-2.5 py-1 text-xs font-medium text-foreground",
           className,
         )}
       >
-        <Clock className="h-3.5 w-3.5" /> Pending verification
+        <Clock className="h-3.5 w-3.5 text-[#5C6663]" /> Pending verification
       </span>
     );
   }
@@ -28,7 +28,7 @@ export function VerificationBadge({
     return (
       <span
         className={cn(
-          "inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary",
+          "inline-flex items-center gap-1 rounded-full bg-[#3FAE72]/12 px-2.5 py-1 text-xs font-medium text-[#2B8A57] dark:bg-[#A8F0C4]/15 dark:text-[#A8F0C4]",
           className,
         )}
       >
@@ -39,7 +39,7 @@ export function VerificationBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-1 text-xs font-medium text-success",
+        "inline-flex items-center gap-1 rounded-full bg-[#3FAE72]/12 px-2.5 py-1 text-xs font-medium text-[#2B8A57] dark:bg-[#A8F0C4]/15 dark:text-[#A8F0C4]",
         className,
       )}
     >

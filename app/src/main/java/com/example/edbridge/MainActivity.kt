@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,9 +16,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,7 +57,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EdBridgeTheme {
-                EdBridgeApp()
+                var showSplash by remember { mutableStateOf(true) }
+                Crossfade(targetState = showSplash, label = "splash_to_app") { isSplash ->
+                    if (isSplash) {
+                        SplashScreen(onFinish = { showSplash = false })
+                    } else {
+                        EdBridgeApp()
+                    }
+                }
             }
         }
     }
@@ -109,15 +120,14 @@ fun EdBridgeApp(
             if (isWide && currentScreen != Screen.SUPPORT_DETAIL) {
                 NavigationRail(
                     header = {
-                        Surface(
-                            shape = CircleShape,
-                            color = PrimaryBlue,
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.School, contentDescription = "Ed-Bridge Logo", tint = Color.White, modifier = Modifier.size(22.dp))
-                            }
-                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.img_edbridge_logo),
+                            contentDescription = "Ed-Bridge Logo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(42.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                        )
                     },
                     modifier = Modifier.padding(vertical = 8.dp)
                 ) {
@@ -146,18 +156,17 @@ fun EdBridgeApp(
                             title = {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
                                     modifier = Modifier.testTag("app_brand_header")
                                 ) {
-                                    Surface(
-                                        shape = RoundedCornerShape(10.dp),
-                                        color = PrimaryBlue,
-                                        modifier = Modifier.size(34.dp)
-                                    ) {
-                                        Box(contentAlignment = Alignment.Center) {
-                                            Icon(Icons.Default.School, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
-                                        }
-                                    }
+                                    Image(
+                                        painter = painterResource(id = R.drawable.img_edbridge_logo),
+                                        contentDescription = "Ed-Bridge brand mark",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(36.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                    )
                                     Column {
                                         Text(
                                             text = "Ed-Bridge",

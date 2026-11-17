@@ -1,102 +1,111 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Lock, ShieldCheck, Eye, Flag } from "lucide-react";
-import { AppShell, PageHeader } from "@/components/edbridge/AppShell";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { EyeOff, Handshake, Repeat } from "lucide-react";
+import { AppShell } from "@/components/edbridge/AppShell";
 import { Button } from "@/components/ui/button";
+import { useEdBridge } from "@/lib/edbridge/store";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
-    meta: [
-      { title: "About Ed-Bridge — How the network works" },
-      {
-        name: "description",
-        content:
-          "How Ed-Bridge differs from crowdfunding: verified communities, non-financial support and traceable impact.",
-      },
-      { property: "og:title", content: "About Ed-Bridge — How the network works" },
-      {
-        property: "og:description",
-        content:
-          "Verified communities, non-financial support and traceable impact at Makerere University.",
-      },
-    ],
+    meta: [{ title: "About Ed-Bridge — We rise by lifting others." }],
   }),
-  component: About,
+  component: AboutScreen,
 });
 
-function About() {
+function AboutScreen() {
+  const navigate = useNavigate();
+  const { setRole } = useEdBridge();
+
   return (
     <AppShell>
-      <div className="mx-auto max-w-4xl px-6 py-14">
-        <PageHeader
-          eyebrow="About"
-          title="A student network, not a donation page"
-          subtitle="Ed-Bridge helps a student answer two questions: who around me can help, and who around me might need my help."
-        />
-
-        <section className="space-y-4 text-muted-foreground">
-          <p>
-            Crowdfunding asks strangers for money. Ed-Bridge starts from relationships that already
-            exist — the same college, the same course, the same secondary school, the same alumni
-            network — and makes it easy for those people to offer whatever they actually have:
-            money, time, a spare laptop, an internship lead or an introduction.
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-6">
+        <section className="rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+          <h1 className="font-display text-2xl font-extrabold text-foreground">About Ed-Bridge</h1>
+          <p className="mt-2 text-sm font-semibold text-primary">
+            We rise by lifting others — without forcing students to broadcast personal hardship to
+            the public.
           </p>
-          <p>
-            The prototype focuses deliberately on Makerere University so the network effects are
-            concrete. All people, requests and organizations shown are fictional.
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            Traditional crowdfunding forces students into a painful privacy paradox: expose your
+            financial struggle to classmates or drop out quietly. Ed-Bridge solves this by verifying
+            enrollment &amp; invoices privately, protecting identity with Shielded Aliases
+            (#EB-402), routing help through real academic &amp; alumni circles, and settling funds
+            directly to university bursars or hostel custodians.
           </p>
         </section>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2">
-          {[
-            {
-              icon: ShieldCheck,
-              title: "Verification",
-              body: "Identity, student status, request documents and human review — each shown separately on every request.",
-            },
-            {
-              icon: Lock,
-              title: "Privacy by default",
-              body: "Every action can be Private, Recognized or Public. Ed-Bridge never infers or displays anyone's wealth.",
-            },
-            {
-              icon: Eye,
-              title: "Traceable impact",
-              body: "Support becomes a record — students supported, mentorship given, opportunities referred, resources provided.",
-            },
-            {
-              icon: Flag,
-              title: "Safety",
-              body: "Report a request or user, block someone, adjust privacy settings. Sensitive documents are never public.",
-            },
-          ].map((c) => (
-            <div
-              key={c.title}
-              className="rounded-2xl border border-border/70 bg-card p-5 shadow-[var(--shadow-card)]"
-            >
-              <c.icon className="h-5 w-5 text-primary" />
-              <h3 className="mt-3 font-semibold">{c.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{c.body}</p>
-            </div>
-          ))}
-        </div>
+        <PillarCard
+          icon={EyeOff}
+          title="1. Dignified & Shielded Aid"
+          body="Students choose Shielded Alias + Alumni-Only scope so classmates never see their financial request, while alumni trust the 4-step verification badge."
+        />
+        <PillarCard
+          icon={Handshake}
+          title="2. Six Ways to Help Beyond Cash"
+          body="Financial settlement is only one path. Supporters also mentor, lend spare laptops, refer paid campus gigs, share internships, and amplify within trusted circles."
+        />
+        <PillarCard
+          icon={Repeat}
+          title="3. Built for Ongoing Attachment"
+          body="Students stay weekly for paid campus opportunities & peer mentorship; supporters build a Verified Impact Passport & consistency streak; organizations pay for cohort audit & matching SaaS."
+        />
 
-        <div className="mt-10 rounded-2xl border border-dashed border-border bg-secondary/40 p-6">
-          <h3 className="font-semibold">What this prototype does not do</h3>
-          <p className="mt-2 text-sm text-muted-foreground">
-            No real money transfers, no university payment integration, no real identity
-            verification, no medical document processing and no production matching algorithms.
-            Financial actions are simulated for demonstration.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Button asChild>
-              <Link to="/onboarding">Try the student flow</Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link to="/supporter">Try the supporter flow</Link>
-            </Button>
-          </div>
+        <div className="space-y-2 pt-1">
+          <Button
+            onClick={() => {
+              setRole("student");
+              navigate({ to: "/student" });
+            }}
+            className="h-12 w-full rounded-xl"
+          >
+            Try Student Shielded Flow
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setRole("supporter");
+              navigate({ to: "/supporter" });
+            }}
+            className="h-12 w-full rounded-xl"
+          >
+            Try Supporter Impact Flow
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setRole("organization");
+              navigate({ to: "/organization" });
+            }}
+            className="h-12 w-full rounded-xl"
+          >
+            Try Organization Cohort SaaS
+          </Button>
         </div>
       </div>
     </AppShell>
+  );
+}
+
+function PillarCard({
+  icon: Icon,
+  title,
+  body,
+}: {
+  icon: typeof EyeOff;
+  title: string;
+  body: string;
+}) {
+  return (
+    <article className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
+      <span
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]"
+        style={{ backgroundColor: "var(--shield-bg)", color: "var(--shield-fg)" }}
+      >
+        <Icon className="h-5 w-5" />
+      </span>
+      <div>
+        <h2 className="text-sm font-bold text-foreground">{title}</h2>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{body}</p>
+      </div>
+    </article>
   );
 }
