@@ -71,8 +71,8 @@ function OpportunitiesScreen() {
     <AppShell>
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-3.5 px-4 py-4 sm:px-6 sm:py-6">
         <SectionHeader
-          title="Opportunities, Bursaries & Capacity Dev"
-          subtitle="Transparent eligibility, deadlines & partner attribution — matched from your circles"
+          title="Find student opportunities"
+          subtitle="Explore scholarships, training, internships and student work. Check every detail with the provider before acting."
         />
 
         <div className="relative">
@@ -232,7 +232,7 @@ function OpportunitiesScreen() {
                     disabled={isApplied}
                     onClick={() => {
                       applyOpportunity(opp.id, opp.title);
-                      toast.success("Verified Ed-Bridge profile submitted");
+                      toast.success("Saved in this browser's prototype only. No application was sent.");
                     }}
                     className="mt-3 h-11 w-full rounded-xl"
                   >
@@ -241,11 +241,7 @@ function OpportunitiesScreen() {
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    {isApplied
-                      ? "Applied with Verified Profile"
-                      : opp.kind === "Training"
-                        ? "Reserve Seat with Verified Profile"
-                        : "Apply with Verified Profile"}
+                    {isApplied ? "Tracked in this demo" : "Track this opportunity"}
                   </Button>
                 </article>
               );

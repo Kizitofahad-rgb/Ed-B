@@ -94,7 +94,7 @@ const helpCategories = [
 ] as const;
 
 function HomeScreen() {
-  const { requests, stakeholderPartners, setRole } = useEdBridge();
+  const { requests, setRole } = useEdBridge();
   const navigate = useNavigate();
   const [selectedCompareTab, setSelectedCompareTab] = useState(0);
 
@@ -228,13 +228,9 @@ function HomeScreen() {
         <div className="mx-auto mt-12 max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-3 rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)] sm:grid-cols-4 sm:gap-6 sm:p-6">
             <div>
-              <p className="font-display text-2xl font-extrabold text-primary sm:text-3xl tabular-nums">
-                <AnimatedCounter value={100} suffix="%" />
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">Direct Bursar Audit</p>
-              <p className="text-[11px] text-muted-foreground">
-                Settled straight to university/vendor
-              </p>
+              <p className="font-display text-xl font-extrabold text-primary sm:text-2xl">Source-led</p>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">Opportunity details</p>
+              <p className="text-[11px] text-muted-foreground">Provider links and check dates belong on every listing</p>
             </div>
             <div>
               <p className="font-display text-2xl font-extrabold text-foreground sm:text-3xl tabular-nums">
@@ -246,18 +242,14 @@ function HomeScreen() {
               <p className="text-[11px] text-muted-foreground">Mentorship, laptops, paid gigs</p>
             </div>
             <div>
-              <p className="font-display text-2xl font-extrabold text-foreground sm:text-3xl">
-                #EB-402
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">Shielded Class Privacy</p>
-              <p className="text-[11px] text-muted-foreground">Real name hidden from classmates</p>
+              <p className="font-display text-xl font-extrabold text-foreground sm:text-2xl">Privacy first</p>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">Student dignity</p>
+              <p className="text-[11px] text-muted-foreground">Only collect what the service needs</p>
             </div>
             <div>
-              <p className="font-display text-2xl font-extrabold text-primary sm:text-3xl tabular-nums">
-                <AnimatedCounter value={stakeholderPartners.length} />+
-              </p>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">Partner Charters</p>
-              <p className="text-[11px] text-muted-foreground">MUMSA, Alumni &amp; Sponsor Orgs</p>
+              <p className="font-display text-xl font-extrabold text-primary sm:text-2xl">Fair access</p>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">Clear eligibility</p>
+              <p className="text-[11px] text-muted-foreground">No promise of selection or funding</p>
             </div>
           </div>
         </div>

@@ -1,25 +1,43 @@
-# Ed-Bridge (Android)
+# Ed-Bridge
 
-Ed-Bridge is a trusted student support and educational opportunity network, originating at Makerere University in Uganda.
+Ed-Bridge is an early-stage student-support initiative exploring how university students can find legitimate education-support opportunities, understand the requirements, and connect with the organisations that provide them.
 
-## Overview
-Unlike anonymous crowdfunding, Ed-Bridge leverages relational trust networks (colleges, courses, secondary school alumni, and student associations) to connect students with direct funding, mentorship, equipment, opportunities, and referrals.
+## Product principles
 
-## Architecture
-- **Language**: Kotlin
-- **UI Framework**: Jetpack Compose (Material Design 3)
-- **Architecture**: MVVM with reactive StateFlow repository
-- **Design System**: Centralized Material 3 Theme with Makerere community color tokens
-- **Platform**: Android SDK 36 (minSdk 26)
+- Show the official provider and source for every opportunity, with a last-checked date.
+- Explain eligibility, deadlines, and application steps in plain language.
+- Treat student identity, academic records, and financial information as private.
+- Keep access fair and make clear that listing an opportunity does not guarantee selection or funding.
+- Describe MUMSA and other organisations as prospective stakeholders unless a collaboration is formally agreed.
+- Do not receive or route funds through Ed-Bridge without an agreed, accountable process.
 
-## Core Features
-1. **Interactive Ed-Bridge Circle**: Visual network graph connecting students through shared colleges (CoCIS, CEDAT, CHUSS, CAES, CONAS), courses, and alumni networks.
-2. **Support Requests**: Verified student needs (Tuition, Laptops/Equipment, Accommodation, Mentorship, Internships) with verification checklist (Identity, Student Status, Documents, Human Review).
-3. **Simulated Direct Funding**: UGX contribution flow with privacy selection (Private, Recognized, Public).
-4. **Relational Giving**: Non-financial support actions (Mentorship, Resources, Opportunity referrals, Community amplification).
-5. **Community Directory & Leaderboard**: Colleges and alumni networks ranked by students helped, mentorship sessions, and opportunities shared.
-6. **Opportunities Matcher**: Internships, scholarships, and hackathons with explicit rationale explaining why the student was matched.
-7. **Impact Passport**: Verifiable contribution history, 52-week activity heatmap, achievement badges, and Proof of Impact document verification.
-8. **Admin Verification Queue**: Workflow for reviewers to verify student identity and documents.
-9. **Student Onboarding**: 4-step wizard for building a verified student profile.
-10. **Notification Center**: Real-time alerts for matches, verifications, and community activity.
+These principles reflect expectations discussed with MUMSA. They do not imply an active partnership or commitment from MUMSA.
+
+## Prototype status
+
+The current web and Android projects are prototypes. People, opportunities, amounts, activity, and verification indicators shown in the interface are illustrative sample data. The web demo does not verify students, send applications, transfer money, or connect to institutional systems. Do not treat a sample listing or profile as a real offer or beneficiary.
+
+The first web MVP is being narrowed to opportunity discovery: browse a listing, understand its eligibility and deadline, see its official source and review date, and continue to the provider's own application channel. Student-support referrals and any financial workflows need separate safeguarding and stakeholder approval before they are enabled.
+
+## Web app: local development
+
+Requirements: Node.js 20+ and npm.
+
+```sh
+npm ci
+npm run dev
+```
+
+The web app uses React, TanStack Start, Vite, and Tailwind CSS. To create a production build locally:
+
+```sh
+npm run build
+```
+
+## Vercel deployment
+
+The repository is configured for TanStack Start on Vercel through Nitro. Import this repository into a Vercel project and let Vercel use the TanStack Start framework preset. The project currently needs no environment secrets. A Vercel deployment URL is separate from this GitHub source-code URL.
+
+## Android app
+
+The `app/` directory contains a separate native Android prototype using Kotlin and Jetpack Compose. Vercel deploys the web app; it does not publish the Android app to Google Play.

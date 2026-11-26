@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
+  AlertTriangle,
   Bell,
   Briefcase,
   Building2,
@@ -67,6 +68,18 @@ export function AppShell({ children }: { children: ReactNode; headerTone?: "auto
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground pb-20 md:pb-0">
       <SiteHeader />
+      <div
+        role="note"
+        className="border-b border-amber-300 bg-amber-50 px-4 py-2.5 text-center text-xs leading-relaxed text-amber-950 dark:border-amber-900 dark:bg-amber-950/50 dark:text-amber-100"
+      >
+        <span className="inline-flex items-center justify-center gap-2">
+          <AlertTriangle aria-hidden="true" className="h-4 w-4 shrink-0" />
+          <span>
+            Prototype preview: sample people, opportunities, amounts and activity are illustrative.
+            No payments, student verification or institutional partnerships are active.
+          </span>
+        </span>
+      </div>
       <main className="min-w-0 flex-1">{children}</main>
       <SiteFooter />
       <MobileBottomBar />
