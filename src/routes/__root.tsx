@@ -8,14 +8,11 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
+import { MotionConfig, motion } from "framer-motion";
 import { Toaster } from "@/components/ui/sonner";
 import { EdBridgeProvider } from "@/lib/edbridge/store";
 import { ThemeProvider } from "@/lib/theme";
-import {
-  BrandMark,
-  EDBRIDGE_FAVICON_DATA_URI,
-  SplashScreenOverlay,
-} from "@/components/edbridge/BrandMark";
+import { BrandMark, SplashScreenOverlay } from "@/components/edbridge/BrandMark";
 
 import appCss from "../styles.css?url";
 
@@ -95,10 +92,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "theme-color", content: "#0A0F1E" },
+      { name: "theme-color", content: "#02A95C" },
     ],
     links: [
-      { rel: "icon", type: "image/svg+xml", href: EDBRIDGE_FAVICON_DATA_URI },
+      { rel: "icon", type: "image/jpeg", href: "/assets/edbridge/img_edbridge_logo.jpg" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -116,7 +113,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>
@@ -130,21 +127,31 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouter().state.location.pathname;
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <EdBridgeProvider>
-          <SplashScreenOverlay />
-          <Outlet />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              className:
-                "border border-border bg-card text-foreground shadow-[var(--shadow-elegant)]",
-            }}
-          />
-        </EdBridgeProvider>
+        <MotionConfig reducedMotion="user">
+          <EdBridgeProvider>
+            <SplashScreenOverlay />
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Outlet />
+            </motion.div>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                className:
+                  "border border-border bg-card text-foreground shadow-[var(--shadow-elegant)]",
+              }}
+            />
+          </EdBridgeProvider>
+        </MotionConfig>
       </ThemeProvider>
     </QueryClientProvider>
   );

@@ -11,6 +11,7 @@ import {
   SearchX,
 } from "lucide-react";
 import { AppShell } from "@/components/edbridge/AppShell";
+import { MintConnectionRipple } from "@/components/edbridge/MintConnectionRipple";
 import {
   DisbursementPill,
   EmptyStateCard,
@@ -72,6 +73,7 @@ function SupportDetailScreen() {
     "financial"
   > | null>(null);
   const [showPostUpdateDialog, setShowPostUpdateDialog] = useState(false);
+  const [recentRipple, setRecentRipple] = useState<string | null>(null);
 
   // Financial Modal State
   const [amountText, setAmountText] = useState("50000");
@@ -170,6 +172,11 @@ function SupportDetailScreen() {
           <div className="mt-3 flex flex-wrap gap-2">
             <ShieldedIdentityBadge disclosureLevel={request.disclosureLevel} />
             <DisbursementPill mode={request.disbursementMode} />
+            {request.referringPartnerName ? (
+              <span className="inline-flex items-center gap-1 rounded-lg bg-[#D1FAE5]/70 px-2.5 py-1 text-[11px] font-semibold text-[#064E3B] dark:bg-[#064E3B]/45 dark:text-[#6EE7B7]">
+                Consented Referral: {request.referringPartnerName}
+              </span>
+            ) : null}
           </div>
 
           {isShielded ? (
@@ -215,9 +222,13 @@ function SupportDetailScreen() {
           </div>
         </section>
 
+        {recentRipple ? (
+          <MintConnectionRipple recipientName={displayName} actionLabel={recentRipple} />
+        ) : null}
+
         {/* Choose How to Help */}
-        <section className="rounded-[18px] border border-border bg-card p-4 shadow-[var(--shadow-card)]">
-          <h2 className="text-base font-bold text-foreground">Choose How to Help</h2>
+        <section className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+          <h2 className="font-display text-base font-bold text-foreground">Choose How to Help</h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
             Every action — cash or non-cash — writes a verified entry to your Impact Passport.
           </p>
@@ -282,8 +293,10 @@ function SupportDetailScreen() {
                 <div className="flex items-center justify-between gap-2">
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold text-white",
-                      u.isGratitude ? "bg-[#7C3AED]" : "bg-[#2845D6]",
+                      "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold",
+                      u.isGratitude
+                        ? "bg-[#132B1F] text-[#CEF8A6]"
+                        : "bg-primary text-primary-foreground",
                     )}
                   >
                     {u.isGratitude ? <Heart className="h-3 w-3" /> : null}
@@ -412,6 +425,7 @@ function SupportDetailScreen() {
                 }
                 supportFinancially(request.id, amt, finPrivacy, rail, finNote);
                 setShowFinancialDialog(false);
+                setRecentRipple(`Settled ${ugx(amt)} via ${rail}`);
                 toast.success(`Settled ${ugx(amt)} via ${rail}`);
               }}
             >
@@ -464,6 +478,9 @@ function SupportDetailScreen() {
               onClick={() => {
                 if (!selectedNonCashType) return;
                 offerSupport(request.id, selectedNonCashType, nonCashPrivacy, nonCashNote);
+                setRecentRipple(
+                  `Offered ${SUPPORT_LABEL_MAP[selectedNonCashType]} to ${displayName}`,
+                );
                 setSelectedNonCashType(null);
                 toast.success("Support offer recorded in Impact Passport");
               }}

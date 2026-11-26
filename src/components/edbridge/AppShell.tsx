@@ -7,21 +7,22 @@ import {
   ChevronDown,
   Compass,
   Handshake,
+  HeartHandshake,
   Home,
   Info,
   Moon,
   Network,
   RotateCcw,
   School,
+  Shield,
   ShieldCheck,
   Sun,
   Trophy,
   UserPlus,
   Users,
-  HeartHandshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BrandWordmark } from "@/components/edbridge/BrandMark";
+import { BrandMark, BrandWordmark } from "@/components/edbridge/BrandMark";
 import { useEdBridge, type DemoRole } from "@/lib/edbridge/store";
 import { useTheme } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -35,13 +36,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-/** Exact 5 primary tabs matching Android MainActivity.kt */
+/** Exact 5 primary tabs preserved for mobile bottom bar */
 const primaryTabs = [
   { to: "/", label: "Home", icon: Home },
   { to: "/explore-support", label: "Support", icon: HeartHandshake },
   { to: "/discover", label: "Circle", icon: Users },
   { to: "/explore-communities", label: "Circles", icon: Network },
   { to: "/impact", label: "Impact", icon: Trophy },
+] as const;
+
+const desktopNavLinks = [
+  { to: "/explore-support", label: "Support" },
+  { to: "/discover", label: "Circle" },
+  { to: "/explore-communities", label: "Circles" },
+  { to: "/opportunities", label: "Gigs & Bursaries" },
+  { to: "/impact", label: "Impact" },
+  { to: "/organization", label: "Partners" },
 ] as const;
 
 const roleLabelMap: Record<DemoRole, string> = {
@@ -57,85 +67,10 @@ export function AppShell({ children }: { children: ReactNode; headerTone?: "auto
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground pb-20 md:pb-0">
       <SiteHeader />
-      <div className="flex flex-1">
-        <DesktopRail />
-        <main className="min-w-0 flex-1">{children}</main>
-      </div>
+      <main className="min-w-0 flex-1">{children}</main>
+      <SiteFooter />
       <MobileBottomBar />
     </div>
-  );
-}
-
-function DesktopRail() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  return (
-    <aside
-      aria-label="Primary sections"
-      className="hidden w-24 shrink-0 flex-col items-center gap-2 border-r border-border bg-card/70 py-5 md:flex"
-    >
-      {primaryTabs.map((tab) => {
-        const active =
-          tab.to === "/"
-            ? pathname === "/"
-            : pathname === tab.to || pathname.startsWith(`${tab.to}/`);
-        const Icon = tab.icon;
-        return (
-          <Link
-            key={tab.to}
-            to={tab.to}
-            className="group flex w-20 flex-col items-center gap-1 rounded-xl py-1.5 text-center"
-          >
-            <span
-              className={cn(
-                "flex h-8 w-14 items-center justify-center rounded-full transition-colors",
-                active
-                  ? "bg-[var(--nav-active-bg)] text-[var(--nav-active-fg)]"
-                  : "text-muted-foreground group-hover:bg-secondary group-hover:text-foreground",
-              )}
-            >
-              <Icon className="h-4.5 w-4.5" />
-            </span>
-            <span
-              className={cn(
-                "text-[11px] font-medium",
-                active ? "font-semibold text-foreground" : "text-muted-foreground",
-              )}
-            >
-              {tab.label}
-            </span>
-          </Link>
-        );
-      })}
-
-      <div className="my-1 h-px w-12 bg-border" />
-
-      <Link
-        to="/opportunities"
-        className="group flex w-20 flex-col items-center gap-1 rounded-xl py-1.5 text-center"
-      >
-        <span
-          className={cn(
-            "flex h-8 w-14 items-center justify-center rounded-full transition-colors",
-            pathname === "/opportunities"
-              ? "bg-[var(--nav-active-bg)] text-[var(--nav-active-fg)]"
-              : "text-muted-foreground group-hover:bg-secondary group-hover:text-foreground",
-          )}
-        >
-          <Briefcase className="h-4.5 w-4.5" />
-        </span>
-        <span
-          className={cn(
-            "text-[11px] font-medium",
-            pathname === "/opportunities"
-              ? "font-semibold text-foreground"
-              : "text-muted-foreground",
-          )}
-        >
-          Gigs
-        </span>
-      </Link>
-    </aside>
   );
 }
 
@@ -190,36 +125,58 @@ export function SiteHeader() {
   const { role, setRole, notifications, reset } = useEdBridge();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [menuOpen, setMenuOpen] = useState(false);
   const unread = notifications.filter((n) => !n.read).length;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 text-foreground backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-border/80 bg-background/92 text-foreground backdrop-blur-xl">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex shrink-0 items-center transition-opacity hover:opacity-90">
           <BrandWordmark subtitle={role !== "visitor" ? `${roleLabelMap[role]} Mode` : undefined} />
         </Link>
 
-        {/* Top-right exact actions matching Android TopAppBar */}
+        {/* GoFundMe-inspired centered navigation strip */}
+        <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
+          {desktopNavLinks.map((item) => {
+            const active = pathname === item.to || pathname.startsWith(`${item.to}/`);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={cn(
+                  "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+                  active
+                    ? "bg-[var(--nav-active-bg)] font-semibold text-[var(--nav-active-fg)]"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                )}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Right utility actions + primary CTA */}
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Link
             to="/opportunities"
             aria-label="Paid Gigs & Opportunities"
             title="Paid Gigs & Opportunities"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground lg:hidden"
           >
-            <Briefcase className="h-5 w-5" />
+            <Briefcase className="h-4.5 w-4.5" />
           </Link>
 
           <Link
             to="/notifications"
             aria-label="Notifications"
             title="Notifications"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground"
           >
-            <Bell className="h-5 w-5" />
+            <Bell className="h-4.5 w-4.5" />
             {unread > 0 && (
-              <span className="absolute right-1.5 top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#7C3AED] px-1 text-[10px] font-bold text-white">
+              <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
                 {unread}
               </span>
             )}
@@ -230,19 +187,16 @@ export function SiteHeader() {
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
             title={theme === "dark" ? "Light mode" : "Dark mode"}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-secondary hover:text-foreground"
           >
             {theme === "dark" ? <Sun className="h-4.5 w-4.5" /> : <Moon className="h-4.5 w-4.5" />}
           </button>
 
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <Button
-                size="sm"
-                className="h-10 rounded-[10px] bg-primary px-3.5 text-xs font-semibold text-primary-foreground shadow-none hover:bg-primary/90"
-              >
+              <Button variant="outline" size="sm" className="h-9 rounded-full px-3.5 text-xs">
                 {role === "visitor" ? "Views" : roleLabelMap[role]}
-                <ChevronDown className="ml-1 h-4 w-4" />
+                <ChevronDown className="ml-1 h-3.5 w-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
@@ -275,7 +229,7 @@ export function SiteHeader() {
                   navigate({ to: "/organization" });
                 }}
               >
-                <Building2 className="mr-2 h-4 w-4" /> Organization Pro (B2B SaaS)
+                <Building2 className="mr-2 h-4 w-4" /> Stakeholder &amp; Partner Portal
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
@@ -307,6 +261,18 @@ export function SiteHeader() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Button
+            size="sm"
+            onClick={() => {
+              setRole("student");
+              navigate({ to: "/student" });
+            }}
+            className="hidden h-9 rounded-full px-4 text-xs sm:inline-flex"
+          >
+            <Shield className="h-3.5 w-3.5" />
+            Seek Quiet Aid
+          </Button>
         </div>
       </div>
     </header>
@@ -315,10 +281,114 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-card/50 text-muted-foreground">
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-6 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-6">
-        <p>© {new Date().getFullYear()} Ed-Bridge — Makerere University Student Safety Net.</p>
-        <p>We rise by lifting others · Shielded &amp; Verified Prototype</p>
+    <footer className="border-t border-border bg-secondary/45 text-foreground">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2.5">
+              <BrandMark size={34} />
+              <div>
+                <p className="font-display text-base font-bold">Ed-Bridge</p>
+                <p className="text-[11px] font-medium text-primary">
+                  Makerere Relational Safety Net
+                </p>
+              </div>
+            </div>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Turning colleges, courses, and alumni circles into verified, private support for
+              tuition, sustenance, mentorship, equipment, and paid work.
+            </p>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Get Support
+            </p>
+            <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              <li>
+                <Link to="/student" className="hover:text-primary">
+                  Seek Quiet Aid (Shielded)
+                </Link>
+              </li>
+              <li>
+                <Link to="/onboarding" className="hover:text-primary">
+                  4-Step Verification Wizard
+                </Link>
+              </li>
+              <li>
+                <Link to="/opportunities" className="hover:text-primary">
+                  Paid Gigs &amp; Bursaries
+                </Link>
+              </li>
+              <li>
+                <Link to="/discover" className="hover:text-primary">
+                  Find Your Alumni Circle
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Ways to Help
+            </p>
+            <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              <li>
+                <Link to="/explore-support" className="hover:text-primary">
+                  Verified Student Requests
+                </Link>
+              </li>
+              <li>
+                <Link to="/supporter" className="hover:text-primary">
+                  Supporter Hub &amp; Streak
+                </Link>
+              </li>
+              <li>
+                <Link to="/impact" className="hover:text-primary">
+                  Impact Passport &amp; Receipts
+                </Link>
+              </li>
+              <li>
+                <Link to="/explore-communities" className="hover:text-primary">
+                  College &amp; Alumni Circles
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+              Governance &amp; Trust
+            </p>
+            <ul className="mt-3 space-y-2 text-xs text-muted-foreground">
+              <li>
+                <Link to="/organization" className="hover:text-primary">
+                  MUMSA &amp; Partner Charters
+                </Link>
+              </li>
+              <li>
+                <Link to="/admin" className="hover:text-primary">
+                  Verification Queue
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-primary">
+                  Direct Bursar Architecture
+                </Link>
+              </li>
+              <li>
+                <Link to="/notifications" className="hover:text-primary">
+                  Activity &amp; Updates
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Ed-Bridge — Makerere University Student Safety Net.</p>
+          <p>We rise by lifting others · Privacy-First Direct Bursar &amp; Non-Cash Aid</p>
+        </div>
       </div>
     </footer>
   );

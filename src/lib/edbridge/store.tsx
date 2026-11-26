@@ -12,12 +12,19 @@ import {
   CURRENT_USER_ID,
   DISBURSEMENT_META,
   DISCLOSURE_META,
+  STANDARD_NON_GUARANTEE_NOTICE,
   communitiesById,
+  createStandardCommitments,
+  createStandardNextSteps,
+  opportunities as seedOpportunities,
   people,
   peopleById,
   seedImpact,
+  seedJointFundLedger,
   seedNotifications,
   seedProofItems,
+  seedReferrals,
+  seedStakeholderPartners,
   supportRequests as seedRequests,
   ugx,
 } from "./data";
@@ -27,9 +34,15 @@ import type {
   DisbursementMode,
   DisclosureLevel,
   ImpactEvent,
+  JointFundRecord,
+  Opportunity,
+  PartnerAgreementStatus,
   Privacy,
   ProofOfImpactRecord,
+  RequestCategory,
   RequestUpdate,
+  StakeholderPartner,
+  StudentReferral,
   SupportRequest,
   SupportType,
   VerificationState,
@@ -48,6 +61,10 @@ interface State {
   savedOpportunities: string[];
   appliedOpportunities: string[];
   proofItems: ProofOfImpactRecord[];
+  stakeholderPartners: StakeholderPartner[];
+  referrals: StudentReferral[];
+  jointFundLedger: JointFundRecord[];
+  opportunities: Opportunity[];
   onboarded: boolean;
   supporterStreakMonths: number;
 }
@@ -101,8 +118,53 @@ interface Ctx extends State {
     disclosureLevel?: DisclosureLevel;
     audienceScope?: AudienceScope;
     disbursementMode?: DisbursementMode;
+    referringPartnerId?: string;
+    referringPartnerName?: string;
+    consentConfirmed?: boolean;
   }) => string;
   updateRequestStatus: (requestId: string, status: VerificationState) => void;
+  onboardStakeholderPartner: (input: {
+    name: string;
+    shortName: string;
+    kind: string;
+    blurb: string;
+    partnerFocal: string;
+    partnerRole: string;
+    hallsAndColleges: string[];
+    authorizeBrandingNow: boolean;
+  }) => string;
+  togglePartnerNextStep: (partnerId: string, stepId: string) => void;
+  togglePartnerBrandingAuth: (partnerId: string) => void;
+  advancePartnerStatus: (partnerId: string, status: PartnerAgreementStatus) => void;
+  updatePartnerFocalPersons: (
+    partnerId: string,
+    partnerFocal: string,
+    edBridgeFocal: string,
+  ) => void;
+  submitConsentedReferral: (input: {
+    partnerId: string;
+    hallOrCollege: string;
+    courseAndYear: string;
+    category: RequestCategory;
+    shielded: boolean;
+    consentConfirmed: boolean;
+    nonGuaranteeAcknowledged: boolean;
+    referralSummary: string;
+    amountNeeded?: number;
+    alsoCreateShieldedRequest?: boolean;
+  }) => string;
+  confirmReferralMembership: (referralId: string) => void;
+  publishPartnerOpportunity: (input: {
+    partnerId: string;
+    title: string;
+    kind: Opportunity["kind"];
+    location: string;
+    compensation: string;
+    closesInDays: number;
+    summary: string;
+    eligibilityCriteria: string[];
+    applicationSteps: string[];
+  }) => string;
   markAllRead: () => void;
   totals: {
     studentsSupported: number;
@@ -129,6 +191,10 @@ const initial: State = {
   savedOpportunities: ["o-1"],
   appliedOpportunities: [],
   proofItems: seedProofItems,
+  stakeholderPartners: seedStakeholderPartners,
+  referrals: seedReferrals,
+  jointFundLedger: seedJointFundLedger,
+  opportunities: seedOpportunities,
   onboarded: false,
   supporterStreakMonths: 4,
 };
@@ -483,12 +549,19 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
           disbursementMode,
           aliasLabel,
           updates: [],
+          referringPartnerId: r.referringPartnerId,
+          referringPartnerName: r.referringPartnerName,
+          consentRecord: {
+            informedOfPurpose: r.consentConfirmed ?? true,
+            nonGuaranteeAcknowledged: true,
+            consentedAt: today(),
+          },
         },
         ...s.requests,
       ],
       notifications: notify(s, {
         title: `Request submitted (${DISCLOSURE_META[disclosureLevel].label})`,
-        body: `Your request is queued for document verification. Audience: ${AUDIENCE_META[audienceScope].label}.`,
+        body: `Your request is queued for document verification. Audience: ${AUDIENCE_META[audienceScope].label}.${r.referringPartnerName ? ` Referral channel: ${r.referringPartnerName}.` : ""}`,
         tone: "verification",
       }),
     }));
@@ -513,6 +586,322 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
         tone: "verification",
       }),
     }));
+
+  const onboardStakeholderPartner: Ctx["onboardStakeholderPartner"] = (input) => {
+    const id = `org-${uid()}`;
+    const newPartner: StakeholderPartner = {
+      id,
+      name: input.name.trim(),
+      shortName: input.shortName.trim(),
+      kind: input.kind.trim(),
+      blurb: input.blurb.trim(),
+      planTier: "Standard Stakeholder Charter",
+      status: "proposed-framework",
+      authorization: {
+        nameAndLogoAuthorized: input.authorizeBrandingNow,
+        databaseAccessProhibited: true,
+        zeroFinancialLiability: true,
+        independentGovernancePreserved: true,
+        voluntaryConsentRequired: true,
+      },
+      focalPersons: {
+        partnerFocal: input.partnerFocal.trim(),
+        partnerRole: input.partnerRole.trim(),
+        edBridgeFocal: "Kizito Fahad — Platform & Pilot Lead",
+        lastJointMeeting: "Charter Created · Awaiting Joint Review",
+      },
+      hallsAndColleges:
+        input.hallsAndColleges.length > 0 ? input.hallsAndColleges : ["CoCIS", "CEDAT", "CHUSS"],
+      metrics: {
+        studentsReached: 0,
+        referralsSubmitted: 0,
+        verificationsConfirmed: 0,
+        bursariesMatched: 0,
+        capacitySessions: 0,
+        campaigns: 1,
+        mentorshipSessions: 0,
+      },
+      commitments: createStandardCommitments(),
+      nextSteps: createStandardNextSteps(1),
+    };
+
+    update((s) => ({
+      ...s,
+      stakeholderPartners: [newPartner, ...s.stakeholderPartners],
+      notifications: notify(s, {
+        title: `New stakeholder charter: ${newPartner.shortName}`,
+        body: "Standardized safeguards, consent rules & MoU readiness tracker provisioned.",
+        tone: "verification",
+      }),
+    }));
+    return id;
+  };
+
+  const togglePartnerNextStep: Ctx["togglePartnerNextStep"] = (partnerId, stepId) =>
+    update((s) => ({
+      ...s,
+      stakeholderPartners: s.stakeholderPartners.map((p) =>
+        p.id === partnerId
+          ? {
+              ...p,
+              nextSteps: p.nextSteps.map((st) =>
+                st.id === stepId ? { ...st, done: !st.done } : st,
+              ),
+            }
+          : p,
+      ),
+    }));
+
+  const togglePartnerBrandingAuth: Ctx["togglePartnerBrandingAuth"] = (partnerId) =>
+    update((s) => {
+      const target = s.stakeholderPartners.find((p) => p.id === partnerId);
+      const nextAuthorized = !(target?.authorization.nameAndLogoAuthorized ?? false);
+      return {
+        ...s,
+        stakeholderPartners: s.stakeholderPartners.map((p) =>
+          p.id === partnerId
+            ? {
+                ...p,
+                authorization: {
+                  ...p.authorization,
+                  nameAndLogoAuthorized: nextAuthorized,
+                },
+              }
+            : p,
+        ),
+        notifications: notify(s, {
+          title: nextAuthorized
+            ? `${target?.shortName ?? "Partner"} branding authorized`
+            : `${target?.shortName ?? "Partner"} branding locked`,
+          body: nextAuthorized
+            ? "Public co-branding enabled per written institutional authorization."
+            : "Public branding locked — Safeguard #2 enforced.",
+          tone: "verification",
+        }),
+      };
+    });
+
+  const advancePartnerStatus: Ctx["advancePartnerStatus"] = (partnerId, status) =>
+    update((s) => ({
+      ...s,
+      stakeholderPartners: s.stakeholderPartners.map((p) =>
+        p.id === partnerId ? { ...p, status } : p,
+      ),
+      notifications: notify(s, {
+        title: "Stakeholder agreement status updated",
+        body: `Framework status updated to ${status.replace("-", " ")}.`,
+        tone: "verification",
+      }),
+    }));
+
+  const updatePartnerFocalPersons: Ctx["updatePartnerFocalPersons"] = (
+    partnerId,
+    partnerFocal,
+    edBridgeFocal,
+  ) =>
+    update((s) => ({
+      ...s,
+      stakeholderPartners: s.stakeholderPartners.map((p) =>
+        p.id === partnerId
+          ? {
+              ...p,
+              focalPersons: {
+                ...p.focalPersons,
+                partnerFocal: partnerFocal.trim(),
+                edBridgeFocal: edBridgeFocal.trim(),
+                lastJointMeeting: `${today()} · Focal Persons Updated`,
+              },
+            }
+          : p,
+      ),
+    }));
+
+  const submitConsentedReferral: Ctx["submitConsentedReferral"] = (input) => {
+    const id = `ref-${uid()}`;
+    const partner = state.stakeholderPartners.find((p) => p.id === input.partnerId);
+    const aliasCode = `#EB-${Math.floor(100 + Math.random() * 899)}`;
+    const aliasLabel = input.shielded
+      ? `Verified ${input.hallOrCollege.split("/")[0]?.trim() || "Makerere"} Student · ${aliasCode}`
+      : `Verified Student (${input.courseAndYear})`;
+
+    let linkedRequestId: string | undefined;
+    const newReqId = `r-${uid()}`;
+    if (input.alsoCreateShieldedRequest) {
+      linkedRequestId = newReqId;
+    }
+
+    const referral: StudentReferral = {
+      id,
+      partnerId: input.partnerId,
+      aliasLabel,
+      hallOrCollege: input.hallOrCollege.trim(),
+      courseAndYear: input.courseAndYear.trim(),
+      category: input.category,
+      shielded: input.shielded,
+      consentConfirmed: input.consentConfirmed,
+      nonGuaranteeAcknowledged: input.nonGuaranteeAcknowledged,
+      consentScopeNote:
+        "Voluntary informed consent verified: student briefed on data scope, access controls, and non-guarantee of aid.",
+      referralSummary: input.referralSummary.trim(),
+      membershipVerificationStatus: "confirmed-with-consent",
+      referredByFocal: partner?.focalPersons.partnerFocal ?? "Partner Focal Person",
+      createdAt: today(),
+      linkedRequestId,
+    };
+
+    update((s) => {
+      const nextRequests = input.alsoCreateShieldedRequest
+        ? [
+            {
+              id: newReqId,
+              personId: "p-amina",
+              title: `${input.category} Support — ${input.hallOrCollege}`,
+              category: input.category,
+              need: input.referralSummary.trim(),
+              why: `Consented referral coordinated via ${partner?.shortName ?? "Partner Desk"} (${input.courseAndYear}). Direct bursar/vendor settlement preserves student dignity.`,
+              amountNeeded: input.amountNeeded ?? 300000,
+              amountRaised: 0,
+              deadlineDays: 14,
+              supporters: 0,
+              supportTypes: ["financial", "mentorship"] as SupportType[],
+              status: "pending" as VerificationState,
+              checks: {
+                identity: true,
+                studentStatus: true,
+                documents: true,
+                humanReview: false,
+              },
+              createdAt: today(),
+              disclosureLevel: (input.shielded
+                ? "shielded-alias"
+                : "circle-trusted") as DisclosureLevel,
+              audienceScope: "alumni-mentors-only" as AudienceScope,
+              disbursementMode: "direct-bursar" as DisbursementMode,
+              aliasLabel,
+              updates: [],
+              referringPartnerId: input.partnerId,
+              referringPartnerName: partner?.shortName,
+              consentRecord: {
+                informedOfPurpose: true,
+                nonGuaranteeAcknowledged: true,
+                consentedAt: today(),
+              },
+            },
+            ...s.requests,
+          ]
+        : s.requests;
+
+      return {
+        ...s,
+        referrals: [referral, ...s.referrals],
+        requests: nextRequests,
+        stakeholderPartners: s.stakeholderPartners.map((p) =>
+          p.id === input.partnerId
+            ? {
+                ...p,
+                metrics: {
+                  ...p.metrics,
+                  referralsSubmitted: p.metrics.referralsSubmitted + 1,
+                  verificationsConfirmed: p.metrics.verificationsConfirmed + 1,
+                  studentsReached: p.metrics.studentsReached + 1,
+                },
+              }
+            : p,
+        ),
+        notifications: notify(s, {
+          title: "Consented student referral logged",
+          body: `${aliasLabel} (${input.hallOrCollege}) queued under strict privacy safeguards.`,
+          tone: "verification",
+        }),
+      };
+    });
+
+    return id;
+  };
+
+  const confirmReferralMembership: Ctx["confirmReferralMembership"] = (referralId) =>
+    update((s) => {
+      const target = s.referrals.find((r) => r.id === referralId);
+      if (!target) return s;
+      return {
+        ...s,
+        referrals: s.referrals.map((r) =>
+          r.id === referralId
+            ? { ...r, membershipVerificationStatus: "confirmed-with-consent" }
+            : r,
+        ),
+        stakeholderPartners: s.stakeholderPartners.map((p) =>
+          p.id === target.partnerId
+            ? {
+                ...p,
+                metrics: {
+                  ...p.metrics,
+                  verificationsConfirmed: p.metrics.verificationsConfirmed + 1,
+                },
+              }
+            : p,
+        ),
+        notifications: notify(s, {
+          title: "Consented membership verified",
+          body: `${target.aliasLabel} institutional affiliation confirmed with student consent.`,
+          tone: "verification",
+        }),
+      };
+    });
+
+  const publishPartnerOpportunity: Ctx["publishPartnerOpportunity"] = (input) => {
+    const id = `opp-${uid()}`;
+    const partner = state.stakeholderPartners.find((p) => p.id === input.partnerId);
+    const deadlineDate = new Date(Date.now() + input.closesInDays * 86400000)
+      .toISOString()
+      .slice(0, 10);
+
+    const newOpp: Opportunity = {
+      id,
+      title: input.title.trim(),
+      org: partner?.shortName ?? "Partner Stakeholder",
+      fundingPartner: partner?.name ?? "Partner Organization",
+      partnerId: input.partnerId,
+      kind: input.kind,
+      location: input.location.trim(),
+      compensation: input.compensation.trim(),
+      closesInDays: input.closesInDays,
+      deadlineDate,
+      summary: input.summary.trim(),
+      matchReason: `Published transparently via ${partner?.shortName ?? "Partner"} fair-access desk.`,
+      communities: ["cocis", "cedat", "chuss"],
+      eligibilityCriteria: input.eligibilityCriteria,
+      applicationSteps: input.applicationSteps,
+      fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
+    };
+
+    update((s) => ({
+      ...s,
+      opportunities: [newOpp, ...s.opportunities],
+      stakeholderPartners: s.stakeholderPartners.map((p) =>
+        p.id === input.partnerId
+          ? {
+              ...p,
+              metrics: {
+                ...p.metrics,
+                capacitySessions:
+                  input.kind === "Training" || input.kind === "Mentorship"
+                    ? p.metrics.capacitySessions + 1
+                    : p.metrics.capacitySessions,
+                campaigns: p.metrics.campaigns + 1,
+              },
+            }
+          : p,
+      ),
+      notifications: notify(s, {
+        title: `New ${input.kind} opportunity published`,
+        body: `${newOpp.title} with clear eligibility & deadline (${deadlineDate}).`,
+        tone: "opportunity",
+      }),
+    }));
+
+    return id;
+  };
 
   const completeOnboarding: Ctx["completeOnboarding"] = (opts) =>
     update((s) => ({
@@ -556,6 +945,14 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
       addProofItem,
       createRequest,
       updateRequestStatus,
+      onboardStakeholderPartner,
+      togglePartnerNextStep,
+      togglePartnerBrandingAuth,
+      advancePartnerStatus,
+      updatePartnerFocalPersons,
+      submitConsentedReferral,
+      confirmReferralMembership,
+      publishPartnerOpportunity,
       markAllRead: () =>
         update((s) => ({
           ...s,

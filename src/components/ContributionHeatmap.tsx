@@ -1,7 +1,8 @@
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 /**
- * 4-row x 18-column weekly Consistency Heatmap matching Android ImpactPassportScreen.kt
+ * 4-row x 18-column weekly Consistency Heatmap with sequential fade-in
  */
 export function ContributionHeatmap({
   eventCount = 5,
@@ -22,7 +23,9 @@ export function ContributionHeatmap({
     >
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-bold text-foreground">Consistency Heatmap (18 Weeks)</h3>
-        <span className="text-xs font-bold text-[var(--success)]">Active</span>
+        <span className="rounded-full bg-[#CEF8A6] px-2.5 py-0.5 text-[11px] font-bold text-[#132B1F]">
+          Active Streak
+        </span>
       </div>
 
       <div className="mt-3 space-y-1.5">
@@ -34,13 +37,17 @@ export function ContributionHeatmap({
                 intensity === 0
                   ? "bg-secondary"
                   : intensity === 1
-                    ? "bg-primary/25"
+                    ? "bg-[#A8F0C4]/70 dark:bg-[#02A95C]/30"
                     : intensity === 2
-                      ? "bg-primary/55"
-                      : "bg-primary";
+                      ? "bg-[#02A95C]/65"
+                      : "bg-[#02A95C]";
               return (
-                <div
+                <motion.div
                   key={col}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.25, delay: (row * 18 + col) * 0.008 }}
                   title={`Week ${col + 1} · Activity level ${intensity}`}
                   className={cn("h-3 w-full rounded-[3px]", cellCls)}
                 />

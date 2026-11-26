@@ -115,7 +115,7 @@ function ExploreSupportScreen() {
             className={cn(
               "inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors",
               onlyShielded
-                ? "border-[#6366F1] bg-[#E0E7FF] text-[#312E81]"
+                ? "border-[#132B1F] bg-[#132B1F] text-[#CEF8A6]"
                 : "border-border bg-card text-muted-foreground hover:text-foreground",
             )}
           >

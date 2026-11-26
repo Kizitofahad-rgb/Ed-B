@@ -21,7 +21,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.5,
     yFraction: 0.5,
     radiusPx: 24,
-    color: "#2845D6",
+    color: "#02A95C",
   },
   {
     id: "cocis",
@@ -31,7 +31,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.22,
     yFraction: 0.24,
     radiusPx: 18,
-    color: "#7C3AED",
+    color: "#1B4D3E",
   },
   {
     id: "busia",
@@ -41,7 +41,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.8,
     yFraction: 0.24,
     radiusPx: 18,
-    color: "#0284C7",
+    color: "#018749",
   },
   {
     id: "sarah",
@@ -51,7 +51,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.2,
     yFraction: 0.75,
     radiusPx: 16,
-    color: "#059669",
+    color: "#10B981",
   },
   {
     id: "brian",
@@ -61,7 +61,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.8,
     yFraction: 0.75,
     radiusPx: 16,
-    color: "#D97706",
+    color: "#4B5552",
   },
   {
     id: "mak",
@@ -71,7 +71,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.5,
     yFraction: 0.14,
     radiusPx: 15,
-    color: "#1D35AD",
+    color: "#132B1F",
   },
   {
     id: "joel",
@@ -81,7 +81,7 @@ const NODES: GraphNodeSpec[] = [
     xFraction: 0.5,
     yFraction: 0.86,
     radiusPx: 14,
-    color: "#7C3AED",
+    color: "#3FAE72",
   },
 ];
 
@@ -110,7 +110,7 @@ export function NetworkGraph({
 
   return (
     <div className="space-y-2.5">
-      <div className="relative h-[240px] w-full overflow-hidden rounded-2xl bg-secondary/45">
+      <div className="relative h-[250px] w-full overflow-hidden rounded-2xl border border-border bg-secondary/60">
         <svg
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
@@ -128,9 +128,9 @@ export function NetworkGraph({
                 y1={na.yFraction * 100}
                 x2={nb.xFraction * 100}
                 y2={nb.yFraction * 100}
-                stroke={highlighted ? "#8B9EFF" : "#2845D6"}
-                strokeOpacity={highlighted ? 0.65 : 0.25}
-                strokeWidth={highlighted ? 0.65 : 0.45}
+                stroke={highlighted ? "#02A95C" : "#9AA5A0"}
+                strokeOpacity={highlighted ? 0.85 : 0.35}
+                strokeWidth={highlighted ? 0.8 : 0.45}
               />
             );
           })}
@@ -155,8 +155,8 @@ export function NetworkGraph({
               <div className="flex flex-col items-center">
                 <span
                   className={cn(
-                    "relative flex items-center justify-center rounded-full border-2 border-white transition-transform",
-                    isSelected && "scale-110 ring-8 ring-white/15",
+                    "relative flex items-center justify-center rounded-full border-2 border-white shadow-sm transition-transform duration-200",
+                    isSelected && "scale-110 ring-8 ring-[#02A95C]/20",
                   )}
                   style={{
                     width: node.radiusPx * 2,
@@ -164,7 +164,7 @@ export function NetworkGraph({
                     backgroundColor: node.color,
                   }}
                 />
-                <span className="mt-1 rounded-md bg-card/90 px-1.5 py-0.5 text-[10px] font-semibold text-foreground shadow-xs">
+                <span className="mt-1 rounded-full border border-border/80 bg-card/95 px-2 py-0.5 text-[10px] font-semibold text-foreground shadow-xs">
                   {node.label}
                 </span>
               </div>
@@ -174,7 +174,7 @@ export function NetworkGraph({
       </div>
 
       {interactive && selectedNode ? (
-        <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5">
+        <div className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3.5 py-2.5">
           <span
             className="h-3 w-3 shrink-0 rounded-full"
             style={{ backgroundColor: selectedNode.color }}
@@ -185,7 +185,9 @@ export function NetworkGraph({
             </p>
             <p className="text-xs text-muted-foreground">{selectedNode.relation}</p>
           </div>
-          <span className="shrink-0 text-[10px] text-muted-foreground">Tap node</span>
+          <span className="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">
+            Interactive node
+          </span>
         </div>
       ) : null}
     </div>

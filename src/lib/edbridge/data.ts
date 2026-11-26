@@ -5,11 +5,16 @@ import type {
   DisbursementMode,
   DisclosureLevel,
   ImpactEvent,
+  JointFundRecord,
   Opportunity,
   Organization,
+  PartnerCommitment,
+  PartnerNextStep,
   Person,
   ProofOfImpactRecord,
   Recommendation,
+  StakeholderPartner,
+  StudentReferral,
   SupportRequest,
 } from "./types";
 
@@ -509,70 +514,189 @@ export const REQUEST_ID_ALIAS: Record<string, string> = {
   "r-esther-accom": "r-esther-sustenance",
 };
 
+export const STANDARD_NON_GUARANTEE_NOTICE =
+  "Applying or registering on Ed-Bridge does not automatically guarantee financial assistance. Awards follow transparent, non-discriminatory eligibility review and verified need.";
+
 export const opportunities: Opportunity[] = [
   {
     id: "o-1",
     title: "Part-time Campus Data Assistant",
     org: "Makerere Research Group",
+    fundingPartner: "Makerere Research Group (CoCIS Lab)",
     kind: "Part-time",
     location: "On campus · 10 hrs/wk",
     compensation: "UGX 220,000 / month",
     closesInDays: 6,
+    deadlineDate: "2026-11-29",
     summary:
       "Flexible paid student work cleaning and visualising survey datasets alongside graduate researchers.",
     matchReason: "Matched because you study Computer Science and listed Python & Data skills.",
     communities: ["cocis", "conas"],
+    eligibilityCriteria: [
+      "Enrolled Makerere undergraduate (Year 2 or above) in any college",
+      "Working familiarity with Python, Excel, or SQL",
+      "Available 10 flexible hours/week around lecture timetable",
+    ],
+    applicationSteps: [
+      "Review eligibility & timetable fit",
+      "Submit your verified Ed-Bridge student profile",
+      "Complete a 20-minute sample data cleanup task",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
   },
   {
     id: "o-2",
     title: "Backend Engineering Internship",
     org: "Kampala Fintech Partner",
+    fundingPartner: "Kampala Fintech Partner & Mak Alumni",
     kind: "Internship",
     location: "Kampala · Hybrid",
     compensation: "UGX 450,000 stipend / mo",
     closesInDays: 12,
+    deadlineDate: "2026-12-05",
     summary:
       "Three-month paid internship building mobile money APIs alongside a senior Makerere alumnus.",
     matchReason: "Matched because you belong to CoCIS and Computer Science.",
     communities: ["cs", "cocis"],
+    eligibilityCriteria: [
+      "Verified Makerere student (CS, Software Eng, IT, or related STEM)",
+      "Prior coursework or project in REST APIs, Java, Kotlin, or Node.js",
+      "Open equitably to all eligible students without discrimination",
+    ],
+    applicationSteps: [
+      "Click Apply with Verified Profile",
+      "Share GitHub or 1 class project summary",
+      "30-minute technical interview with alumni engineering lead",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
   },
   {
     id: "o-3",
-    title: "CoCIS Women & Allies Tuition Scholarship",
+    title: "Equitable Tuition & Exam-Permit Bursary Pool",
     org: "Makerere Alumni Network",
+    fundingPartner: "Makerere Alumni Network & Partner Welfare Circles",
+    partnerId: "org-mak-alumni",
     kind: "Scholarship",
     location: "Makerere University",
-    compensation: "Up to UGX 800,000 / sem",
+    compensation: "Up to UGX 800,000 / sem (Direct Bursar)",
     closesInDays: 20,
+    deadlineDate: "2026-12-13",
     summary:
-      "Partial tuition scholarship for continuing computing students with verified academic progress.",
-    matchReason: "Matched because you belong to CoCIS.",
-    communities: ["cocis"],
+      "Partial tuition scholarship for continuing students with verified academic progress; settled directly with the Makerere Bursar.",
+    matchReason: "Matched because you belong to CoCIS & verified alumni circles.",
+    communities: ["cocis", "cedat", "chuss"],
+    eligibilityCriteria: [
+      "Valid Makerere University student ID & current semester registration",
+      "Verified official bursar fee invoice showing outstanding balance",
+      "Transparent, non-discriminatory selection reviewed by joint focal committee",
+    ],
+    applicationSteps: [
+      "Choose Shielded Alias or Circle Trusted identity",
+      "Attach current semester invoice & optional partner referral",
+      "Human verification & direct bursar settlement if selected",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
   },
   {
     id: "o-4",
     title: "Alumni Mentorship Cohort — Semester 2",
     org: "Mak Alumni Network",
+    fundingPartner: "Mak Alumni Network",
+    partnerId: "org-mak-alumni",
     kind: "Mentorship",
     location: "Online · Fortnightly",
     compensation: "6 structured sessions + CV review",
     closesInDays: 8,
+    deadlineDate: "2026-12-01",
     summary:
       "Pair up with a verified alumnus in software, engineering, or product management for career guidance.",
     matchReason: "Matched because 3 mentors in your communities are accepting mentees.",
     communities: ["mak-alumni", "cocis"],
+    eligibilityCriteria: [
+      "Active Makerere student seeking career or academic guidance",
+      "Commitment to attend 6 fortnightly 45-minute sessions",
+    ],
+    applicationSteps: [
+      "Select 2 career focus areas",
+      "Apply with Verified Profile",
+      "Matched within 5 days by community coordinators",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
   },
   {
     id: "o-5",
     title: "East Africa Civic Tech Hackathon",
     org: "Regional Student Tech Network",
+    fundingPartner: "Regional Student Tech Network",
     kind: "Hackathon",
     location: "Kampala · 48 hours",
     compensation: "UGX 1.5M prize + travel stipend",
     closesInDays: 15,
+    deadlineDate: "2026-12-08",
     summary: "Build solutions for campus & civic challenges; travel and meal support provided.",
     matchReason: "Matched because your skills include React and Python.",
     communities: ["cs", "cedat"],
+    eligibilityCriteria: [
+      "Teams of 2–4 students from any Makerere college",
+      "Working prototype built during the 48-hour sprint",
+    ],
+    applicationSteps: [
+      "Register verified profile solo or as a team",
+      "Submit 1-paragraph problem brief before deadline",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
+  },
+  {
+    id: "o-6",
+    title: "Student Financial Literacy & Tuition Planning Clinic",
+    org: "Ed-Bridge × Welfare Partners",
+    fundingPartner: "Ed-Bridge Capacity Desk & Partner Focal Mentors",
+    partnerId: "org-mumsa",
+    kind: "Training",
+    location: "Makerere Main Campus & Live Stream",
+    compensation: "Free workshop + bursary prep toolkit",
+    closesInDays: 10,
+    deadlineDate: "2026-12-03",
+    summary:
+      "Practical capacity-building session on semester budgeting, halal/ethical emergency planning, bursary documentation, and paid campus work readiness.",
+    matchReason:
+      "Recommended capacity-development programme supporting student academic continuity.",
+    communities: ["cocis", "chuss", "cedat", "mak-alumni"],
+    eligibilityCriteria: [
+      "Open to all Makerere University students across halls and colleges",
+      "Zero cost — voluntary participation with certificate of attendance",
+    ],
+    applicationSteps: [
+      "Click Register / Apply with Verified Profile",
+      "Receive campus hall room or stream link 24 hours before session",
+    ],
+    fairAccessNotice:
+      "Open capacity-building clinic. Attendance equips students for bursary readiness and does not obligate any partner financially.",
+  },
+  {
+    id: "o-7",
+    title: "Scholarship Essay, CV & Bursary Readiness Workshop",
+    org: "Campus Career & Welfare Alliance",
+    fundingPartner: "Makerere Alumni Career Mentors",
+    partnerId: "org-mumsa",
+    kind: "Training",
+    location: "CoCIS Auditorium / Hybrid",
+    compensation: "Free 1-on-1 CV & scholarship review",
+    closesInDays: 14,
+    deadlineDate: "2026-12-07",
+    summary:
+      "Learn how to document academic standing, draft credible scholarship statements, and access verified bursaries without over-exposing private family hardship.",
+    matchReason: "Matches your interest in scholarships, mentorship, and career readiness.",
+    communities: ["cocis", "cedat", "mak-alumni"],
+    eligibilityCriteria: [
+      "Enrolled Makerere undergraduate or diploma student",
+      "Bring draft CV or scholarship target (template provided if none)",
+    ],
+    applicationSteps: [
+      "Reserve seat using Verified Profile",
+      "Attend 90-minute clinic + optional mentor follow-up",
+    ],
+    fairAccessNotice: STANDARD_NON_GUARANTEE_NOTICE,
   },
 ];
 
@@ -612,6 +736,345 @@ export const organizations: Organization[] = [
     blurb:
       "Runs emergency sustenance grants and workshop-resource sharing for engineering students.",
     planTier: "Campus Partner",
+  },
+];
+
+export const STAKEHOLDER_SAFEGUARDS = [
+  {
+    id: "sg-liability",
+    title: "Zero Automatic Financial Liability",
+    detail:
+      "Partner associations are never automatically responsible for Ed-Bridge operations, development, or payouts unless separately agreed in writing.",
+  },
+  {
+    id: "sg-branding",
+    title: "Strict Name, Logo & Database Protection",
+    detail:
+      "Ed-Bridge never uses a partner's name, emblem, student database, or institutional identity without explicit prior written authorization.",
+  },
+  {
+    id: "sg-no-guarantee",
+    title: "No Automatic Aid Guarantee",
+    detail:
+      "Registering, referring, or submitting an application never promises funding; awards follow transparent, verified eligibility review.",
+  },
+  {
+    id: "sg-joint-funds",
+    title: "Governed Joint Funds & Verifiable Records",
+    detail:
+      "Any jointly held or distributed resources follow written procedures, dual focal sign-off, and direct bursar/vendor settlement receipts.",
+  },
+  {
+    id: "sg-consent",
+    title: "Voluntary Informed Student Consent",
+    detail:
+      "Students are told what information is collected, why it is needed, and who accesses it before any referral or verification occurs.",
+  },
+  {
+    id: "sg-independence",
+    title: "Independent Leadership & Programmes Respected",
+    detail:
+      "Collaboration complements existing student association welfare desks without interfering in internal governance or decision-making.",
+  },
+] as const;
+
+export function createStandardCommitments(): PartnerCommitment[] {
+  return [
+    {
+      area: "Transparency",
+      mutualCommitment:
+        "Open communication on eligibility, deadlines, procedures, and funding partners.",
+      platformControl: "Structured eligibility & deadline cards on every listed opportunity.",
+    },
+    {
+      area: "Accountability",
+      mutualCommitment: "Clear reporting on jointly implemented activities, referrals, and funds.",
+      platformControl: "Aggregated cohort ledger & dual focal sign-off receipts.",
+    },
+    {
+      area: "Student welfare",
+      mutualCommitment:
+        "Prioritising students' educational continuity, dignity, and best interests.",
+      platformControl: "Shielded Alias (#EB-xxx) keeps classmate privacy intact.",
+    },
+    {
+      area: "Data protection",
+      mutualCommitment:
+        "Safeguarding academic & financial records; sharing only with lawful consent.",
+      platformControl: "Consent-gated referrals & zero partner database scraping.",
+    },
+    {
+      area: "Fair access",
+      mutualCommitment: "Consistent, non-discriminatory eligibility and referral processes.",
+      platformControl: "Auditable verification checklist & mandatory non-guarantee notice.",
+    },
+    {
+      area: "Institutional respect",
+      mutualCommitment:
+        "Respecting both parties' independence, identity, and leadership structures.",
+      platformControl: "Partner branding authorization lock & independent governance flag.",
+    },
+    {
+      area: "Sustainability",
+      mutualCommitment: "Building practical, long-term financial literacy & educational support.",
+      platformControl: "Capacity-development workshops, paid campus gigs & alumni circles.",
+    },
+  ];
+}
+
+export function createStandardNextSteps(initialDoneCount = 1): PartnerNextStep[] {
+  const labels = [
+    "Hold joint review meeting to refine proposed expectations",
+    "Agree on initial pilot scope, target colleges/halls & activities",
+    "Designate official focal persons & communication/referral channels",
+    "Approve data-protection, student-consent, safeguarding & branding protocols",
+    "Prepare and execute formal Memorandum of Understanding (MoU)",
+  ];
+  return labels.map((label, idx) => ({
+    id: `step-${idx + 1}`,
+    label,
+    done: idx < initialDoneCount,
+  }));
+}
+
+export const seedStakeholderPartners: StakeholderPartner[] = [
+  {
+    id: "org-mumsa",
+    name: "Makerere University Muslim Students Association",
+    shortName: "MUMSA (Proposed Pilot)",
+    kind: "Student Welfare & Faith Association",
+    blurb:
+      "Proposed collaboration framework from the Office of the Chairman to connect Muslim students across halls and colleges with verified tuition aid, bursaries, mentorship, and financial literacy while upholding strict consent and privacy.",
+    planTier: "Pilot Charter Framework",
+    status: "proposed-framework",
+    authorization: {
+      nameAndLogoAuthorized: false,
+      databaseAccessProhibited: true,
+      zeroFinancialLiability: true,
+      independentGovernancePreserved: true,
+      voluntaryConsentRequired: true,
+    },
+    focalPersons: {
+      partnerFocal: "Office of the Chairman / Welfare Desk (Pending Assignment)",
+      partnerRole: "Institutional Coordination & Consented Referrals",
+      edBridgeFocal: "Kizito Fahad — Platform & Pilot Lead",
+      lastJointMeeting: "Discussion Framework Received · Ready for Joint Review",
+    },
+    hallsAndColleges: [
+      "Mary Stuart",
+      "Lumumba",
+      "Mitchell",
+      "Nsibirwa",
+      "Africa",
+      "Livingstone",
+      "CoCIS",
+      "CEDAT",
+      "CHUSS",
+      "CHS",
+    ],
+    metrics: {
+      studentsReached: 148,
+      referralsSubmitted: 3,
+      verificationsConfirmed: 2,
+      bursariesMatched: 2,
+      capacitySessions: 2,
+      campaigns: 2,
+      mentorshipSessions: 14,
+    },
+    commitments: createStandardCommitments(),
+    nextSteps: createStandardNextSteps(1),
+  },
+  {
+    id: "org-mak-alumni",
+    name: "Makerere Alumni Network",
+    shortName: "Mak Alumni",
+    kind: "Alumni Association",
+    blurb:
+      "Coordinates alumni tuition matching pools, mentorship cohorts, and direct bursar disbursements across Makerere colleges.",
+    planTier: "Ed-Bridge Enterprise",
+    status: "mou-signed",
+    authorization: {
+      nameAndLogoAuthorized: true,
+      databaseAccessProhibited: true,
+      zeroFinancialLiability: true,
+      independentGovernancePreserved: true,
+      voluntaryConsentRequired: true,
+    },
+    focalPersons: {
+      partnerFocal: "Brian O. — Alumni Chapters Coordinator",
+      partnerRole: "Matching Pool & Alumni Outreach Lead",
+      edBridgeFocal: "Ed-Bridge Bursar & Partner Desk",
+      lastJointMeeting: "2026-10-18 · MoU Active",
+    },
+    hallsAndColleges: ["CoCIS", "CEDAT", "COBAMS", "CHUSS"],
+    metrics: {
+      studentsReached: 412,
+      referralsSubmitted: 18,
+      verificationsConfirmed: 16,
+      bursariesMatched: 14,
+      capacitySessions: 6,
+      campaigns: 6,
+      mentorshipSessions: 132,
+    },
+    commitments: createStandardCommitments(),
+    nextSteps: createStandardNextSteps(5),
+  },
+  {
+    id: "org-laptop-fund",
+    name: "Eastern Uganda Laptop Fund",
+    shortName: "Eastern Laptop Fund",
+    kind: "Education Non-Profit",
+    blurb:
+      "Refurbishes and lends laptops to computing and engineering students with tracked semester custody and academic check-ins.",
+    planTier: "Ed-Bridge Pro",
+    status: "pilot-active",
+    authorization: {
+      nameAndLogoAuthorized: true,
+      databaseAccessProhibited: true,
+      zeroFinancialLiability: true,
+      independentGovernancePreserved: true,
+      voluntaryConsentRequired: true,
+    },
+    focalPersons: {
+      partnerFocal: "Collins B. — Hardware Custody Steward",
+      partnerRole: "Equipment Verification & Loan Tracking",
+      edBridgeFocal: "CoCIS Lab Liaison",
+      lastJointMeeting: "2026-11-01 · Pilot Active",
+    },
+    hallsAndColleges: ["CoCIS", "CEDAT", "Busia SS Alumni"],
+    metrics: {
+      studentsReached: 96,
+      referralsSubmitted: 9,
+      verificationsConfirmed: 8,
+      bursariesMatched: 11,
+      capacitySessions: 2,
+      campaigns: 3,
+      mentorshipSessions: 12,
+    },
+    commitments: createStandardCommitments(),
+    nextSteps: createStandardNextSteps(4),
+  },
+  {
+    id: "org-cedat-guild",
+    name: "CEDAT Students' Guild",
+    shortName: "CEDAT Guild",
+    kind: "Student Organization",
+    blurb:
+      "Runs emergency sustenance vouchers, industrial training referrals, and workshop-resource sharing for engineering students.",
+    planTier: "Campus Partner",
+    status: "pilot-active",
+    authorization: {
+      nameAndLogoAuthorized: true,
+      databaseAccessProhibited: true,
+      zeroFinancialLiability: true,
+      independentGovernancePreserved: true,
+      voluntaryConsentRequired: true,
+    },
+    focalPersons: {
+      partnerFocal: "David K. — CEDAT Welfare Secretary",
+      partnerRole: "Hall & Workshop Referral Focal",
+      edBridgeFocal: "Ed-Bridge Campus Liaison",
+      lastJointMeeting: "2026-10-29 · Pilot Active",
+    },
+    hallsAndColleges: ["CEDAT", "Nsibirwa", "Lumumba", "Mitchell"],
+    metrics: {
+      studentsReached: 188,
+      referralsSubmitted: 11,
+      verificationsConfirmed: 9,
+      bursariesMatched: 7,
+      capacitySessions: 3,
+      campaigns: 4,
+      mentorshipSessions: 34,
+    },
+    commitments: createStandardCommitments(),
+    nextSteps: createStandardNextSteps(4),
+  },
+];
+
+export const seedReferrals: StudentReferral[] = [
+  {
+    id: "ref-mum-1",
+    partnerId: "org-mumsa",
+    aliasLabel: "Verified CoCIS Year 2 Student · #EB-402",
+    hallOrCollege: "Mary Stuart / CoCIS",
+    courseAndYear: "BSc Computer Science · Year 2",
+    category: "Tuition",
+    shielded: true,
+    consentConfirmed: true,
+    nonGuaranteeAcknowledged: true,
+    consentScopeNote:
+      "Student explicitly consented to share enrollment confirmation & bursar invoice with verified alumni reviewers only.",
+    referralSummary:
+      "Consistent 4.2 GPA standing; temporary family cash-flow gap ahead of Semester 2 exam permits.",
+    membershipVerificationStatus: "routed-to-aid",
+    referredByFocal: "Welfare Desk Focal (Pilot Preview)",
+    createdAt: "2026-11-10",
+    linkedRequestId: "r-shielded-tuition",
+  },
+  {
+    id: "ref-mum-2",
+    partnerId: "org-mumsa",
+    aliasLabel: "Verified CHS Year 3 Student · #EB-514",
+    hallOrCollege: "Mitchell Hall / CHS",
+    courseAndYear: "MBChB Medicine · Year 3",
+    category: "Accommodation",
+    shielded: true,
+    consentConfirmed: true,
+    nonGuaranteeAcknowledged: true,
+    consentScopeNote:
+      "Voluntary referral consent signed; student requested Shielded Alias to protect privacy from peers.",
+    referralSummary:
+      "Clinical rotation hostel fee gap while external bursary processes; eligible for direct vendor settlement.",
+    membershipVerificationStatus: "pending-partner-check",
+    referredByFocal: "Hall Representative (Mitchell)",
+    createdAt: "2026-11-18",
+  },
+  {
+    id: "ref-ced-1",
+    partnerId: "org-cedat-guild",
+    aliasLabel: "Collins B. (CEDAT Year 2)",
+    hallOrCollege: "Lumumba / CEDAT",
+    courseAndYear: "Electrical Engineering · Year 2",
+    category: "Career / Internship",
+    shielded: false,
+    consentConfirmed: true,
+    nonGuaranteeAcknowledged: true,
+    consentScopeNote:
+      "Student consented to Circle Trusted visibility for alumni internship referrals.",
+    referralSummary: "Seeking compulsory industrial training placement in Kampala power systems.",
+    membershipVerificationStatus: "confirmed-with-consent",
+    referredByFocal: "David K. — CEDAT Welfare Secretary",
+    createdAt: "2026-11-12",
+    linkedRequestId: "r-collins-intern",
+  },
+];
+
+export const seedJointFundLedger: JointFundRecord[] = [
+  {
+    id: "jfl-1",
+    partnerId: "org-mak-alumni",
+    referenceCode: "EB-MAK-2026-041",
+    title: "Makerere Bursar Direct Tuition Settlement",
+    beneficiaryAlias: "Student #EB-402 (Shielded)",
+    settlementChannel: "Makerere University Bursar Account",
+    amountVerified: 210000,
+    partnerSignOff: "Brian O. (Alumni Focal)",
+    edBridgeSignOff: "Ed-Bridge Audit Officer",
+    date: "2026-11-10",
+    verified: true,
+  },
+  {
+    id: "jfl-2",
+    partnerId: "org-mumsa",
+    referenceCode: "EB-MUM-2026-009",
+    title: "Joint Bursary & Hostel Clearance Pilot Record",
+    beneficiaryAlias: "Student #EB-189 (Shielded)",
+    settlementChannel: "Hostel Custodian Direct Invoice",
+    amountVerified: 145000,
+    partnerSignOff: "Pending Joint MoU Focal",
+    edBridgeSignOff: "Ed-Bridge Audit Officer",
+    date: "2026-11-11",
+    verified: true,
   },
 ];
 

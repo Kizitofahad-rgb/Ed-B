@@ -72,20 +72,20 @@ const CHAPTERS: Chapter[] = [
 
 function StoryStage({ activeChapter }: { activeChapter: number }) {
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+    <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
       <div className="mb-4 flex items-center justify-between text-xs text-muted-foreground">
-        <span className="inline-flex items-center gap-2 font-medium uppercase tracking-[0.18em]">
-          <span className="h-2 w-2 rounded-full bg-[#2F9E62] dark:bg-[#A8F0C4]" />
+        <span className="inline-flex items-center gap-2 font-semibold uppercase tracking-[0.18em]">
+          <span className="h-2 w-2 rounded-full bg-primary" />
           Chapter {CHAPTERS[activeChapter]?.number}
         </span>
-        <span className="rounded-full bg-[#E6F9EE] px-2.5 py-0.5 font-semibold text-[#227A4B] dark:bg-[#A8F0C4]/15 dark:text-[#A8F0C4]">
+        <span className="rounded-full bg-[#E8F8EE] px-3 py-0.5 font-semibold text-[#018749] dark:bg-[#183628] dark:text-[#CEF8A6]">
           {CHAPTERS[activeChapter]?.eyebrow}
         </span>
       </div>
 
-      {/* Stage 1-4: Visual SVG Narrative on Soft Grey / White canvas */}
+      {/* Stage 1-4: Animated SVG Narrative */}
       {activeChapter <= 3 && (
-        <div className="relative flex aspect-[4/3] w-full items-center justify-center rounded-2xl border border-border/80 bg-[#F7F9F8] dark:bg-[#1B1F1E]">
+        <div className="relative flex aspect-[4/3] w-full items-center justify-center rounded-2xl border border-border/80 bg-[#F3F5F4] dark:bg-[#101714]">
           <svg
             viewBox="0 0 400 280"
             className="h-full w-full"
@@ -105,9 +105,9 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
                       y1="145"
                       x2={node.x}
                       y2={node.y}
-                      stroke={lit ? "#2F9E62" : "#9AA5A0"}
-                      strokeWidth={lit ? "1.8" : "1"}
-                      strokeOpacity={lit ? "0.8" : "0.4"}
+                      stroke={lit ? "#02A95C" : "#9AA5A0"}
+                      strokeWidth={lit ? "2" : "1.2"}
+                      strokeOpacity={lit ? "0.85" : "0.4"}
                       strokeDasharray={activeChapter === 1 ? "4 4" : undefined}
                       className={lit ? "mint-line-glow transition-all duration-700" : ""}
                     />
@@ -116,8 +116,8 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
                     cx={node.x}
                     cy={node.y}
                     r={lit ? 15 : 10}
-                    fill={lit ? "#E6F9EE" : "#FFFFFF"}
-                    stroke={lit ? "#2F9E62" : "#9AA5A0"}
+                    fill={lit ? "#E8F8EE" : "#FFFFFF"}
+                    stroke={lit ? "#02A95C" : "#9AA5A0"}
                     strokeWidth={lit ? 2 : 1.2}
                     opacity={activeChapter === 0 ? 0.55 : 1}
                     style={{ transitionDelay: `${i * 90}ms` }}
@@ -126,13 +126,13 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
                     cx={node.x}
                     cy={node.y}
                     r={lit ? 4.5 : 2.5}
-                    fill={lit ? "#2F9E62" : "#8C9692"}
+                    fill={lit ? "#02A95C" : "#8C9692"}
                   />
                   <text
                     x={node.x}
                     y={node.y + 27}
                     textAnchor="middle"
-                    fill={lit ? "#222725" : "#7A8480"}
+                    fill={lit ? "#132B1F" : "#7A8480"}
                     fontSize="10"
                     fontWeight="600"
                   >
@@ -142,7 +142,6 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
               );
             })}
 
-            {/* Arch Bridge building in Chapter 2+ */}
             <g
               style={{
                 opacity: activeChapter >= 1 ? 1 : 0,
@@ -154,63 +153,61 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
               <path
                 d="M110 145 Q182 58 255 72"
                 fill="none"
-                stroke="#2F9E62"
-                strokeWidth="2.4"
+                stroke="#02A95C"
+                strokeWidth="2.6"
                 strokeLinecap="round"
                 className="mint-line-glow"
               />
               <path
                 d="M126 145 Q182 88 238 112"
                 fill="none"
-                stroke="#5C6663"
-                strokeOpacity="0.65"
+                stroke="#132B1F"
+                strokeOpacity="0.6"
                 strokeWidth="1.6"
                 strokeLinecap="round"
               />
             </g>
 
-            {/* The Lone Student Node -> Connected Node */}
             <g>
               {activeChapter >= 1 && (
                 <circle
                   cx="108"
                   cy="145"
                   r="28"
-                  fill="#A8F0C4"
-                  opacity={activeChapter >= 2 ? 0.42 : 0.25}
+                  fill="#CEF8A6"
+                  opacity={activeChapter >= 2 ? 0.55 : 0.3}
                 />
               )}
               <circle
                 cx="108"
                 cy="145"
                 r="16"
-                fill={activeChapter === 0 ? "#E9EDEB" : "#FFFFFF"}
-                stroke={activeChapter === 0 ? "#8C9692" : "#2F9E62"}
+                fill={activeChapter === 0 ? "#E4E8E5" : "#FFFFFF"}
+                stroke={activeChapter === 0 ? "#8C9692" : "#02A95C"}
                 strokeWidth="2.2"
               />
               <circle
                 cx="108"
                 cy="145"
                 r="5.5"
-                fill={activeChapter === 0 ? "#7A8480" : "#2F9E62"}
+                fill={activeChapter === 0 ? "#7A8480" : "#02A95C"}
               />
               <text
                 x="108"
                 y="179"
                 textAnchor="middle"
-                fill={activeChapter === 0 ? "#5C6663" : "#222725"}
+                fill={activeChapter === 0 ? "#5C6663" : "#132B1F"}
                 fontSize="11"
-                fontWeight="600"
+                fontWeight="700"
               >
                 {activeChapter === 0 ? "Lone student" : "Student"}
               </text>
             </g>
           </svg>
 
-          {/* Chapter 4 Orbiting Support Pills */}
           {activeChapter === 3 && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="grid grid-cols-2 gap-3 rounded-2xl border border-[#2F9E62]/30 bg-white/95 p-4 shadow-[var(--shadow-elegant)] backdrop-blur-md dark:bg-[#222726]/95">
+              <div className="grid grid-cols-2 gap-3 rounded-2xl border border-primary/30 bg-card/95 p-4 shadow-[var(--shadow-elegant)] backdrop-blur-md">
                 {[
                   { icon: HeartHandshake, label: "Money" },
                   { icon: Lightbulb, label: "Mentorship" },
@@ -219,9 +216,9 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
                 ].map((item) => (
                   <div
                     key={item.label}
-                    className="flex items-center gap-2 rounded-xl border border-[#E1E6E3] bg-[#F5F7F6] px-3 py-2 text-xs font-semibold text-foreground dark:border-white/10 dark:bg-white/5"
+                    className="flex items-center gap-2 rounded-xl border border-border bg-secondary/70 px-3 py-2 text-xs font-semibold text-foreground"
                   >
-                    <item.icon className="h-3.5 w-3.5 text-[#2F9E62] dark:text-[#A8F0C4]" />
+                    <item.icon className="h-3.5 w-3.5 text-primary" />
                     {item.label}
                   </div>
                 ))}
@@ -231,17 +228,17 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
         </div>
       )}
 
-      {/* Stage 5: Impact Passport rotating in 3D perspective */}
+      {/* Stage 5: 3D Perspective Impact Passport */}
       {activeChapter === 4 && (
-        <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl border border-border/80 bg-[#F7F9F8] p-4 [perspective:900px] dark:bg-[#1B1F1E]">
-          <div className="w-full max-w-sm rounded-2xl border border-[#2F9E62]/30 bg-gradient-to-br from-white via-[#FFFFFF] to-[#E6F9EE] p-5 text-foreground shadow-[0_24px_60px_-20px_rgba(47,158,98,0.28)] transition-transform duration-700 [transform:rotateY(-8deg)_rotateX(5deg)] hover:[transform:rotateY(0deg)_rotateX(0deg)] dark:from-[#262B2A] dark:to-[#26362D]">
+        <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl border border-border/80 bg-[#F3F5F4] p-4 [perspective:900px] dark:bg-[#101714]">
+          <div className="w-full max-w-sm rounded-3xl border border-primary/30 bg-gradient-to-br from-white via-[#FFFFFF] to-[#E8F8EE] p-5 text-foreground shadow-[0_24px_60px_-20px_rgba(2,169,92,0.3)] transition-transform duration-700 [transform:rotateY(-8deg)_rotateX(5deg)] hover:[transform:rotateY(0deg)_rotateX(0deg)] dark:from-[#1B2620] dark:to-[#183628]">
             <div className="flex items-center justify-between">
-              <BrandMark size={26} variant="light" />
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#A8F0C4]/50 px-2.5 py-0.5 text-[11px] font-semibold text-[#1B1F1E]">
-                <BadgeCheck className="h-3 w-3 text-[#227A4B]" /> Impact Passport
+              <BrandMark size={28} />
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#CEF8A6] px-2.5 py-0.5 text-[11px] font-bold text-[#132B1F]">
+                <BadgeCheck className="h-3 w-3 text-[#018749]" /> Impact Passport
               </span>
             </div>
-            <p className="font-display mt-4 text-xl font-semibold">Sarah Namukasa</p>
+            <p className="font-display mt-4 text-xl font-bold">Sarah Namukasa</p>
             <p className="text-xs text-muted-foreground">CoCIS Alumni · Systems Mentor</p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               {[
@@ -252,9 +249,9 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-xl border border-border/80 bg-white/80 p-2.5 dark:bg-white/5"
+                  className="rounded-xl border border-border/80 bg-white/85 p-2.5 dark:bg-white/5"
                 >
-                  <p className="text-lg font-semibold text-[#2F9E62] dark:text-[#A8F0C4] tabular-nums">
+                  <p className="text-lg font-bold text-primary tabular-nums">
                     <AnimatedCounter value={stat.val} duration={1100} />
                   </p>
                   <p className="text-[10px] text-muted-foreground">{stat.label}</p>
@@ -267,16 +264,16 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
 
       {/* Stage 6: Explore Ed-Bridge CTA */}
       {activeChapter === 5 && (
-        <div className="flex aspect-[4/3] w-full flex-col items-center justify-center rounded-2xl border border-[#2F9E62]/25 bg-gradient-to-br from-white to-[#E6F9EE]/60 p-6 text-center dark:from-[#222726] dark:to-[#26362D]">
-          <BrandMark size={48} variant="light" />
-          <h4 className="font-display mt-4 text-2xl font-semibold">Explore Ed-Bridge</h4>
+        <div className="flex aspect-[4/3] w-full flex-col items-center justify-center rounded-2xl border border-primary/25 bg-gradient-to-br from-white to-[#E8F8EE]/75 p-6 text-center dark:from-[#151D19] dark:to-[#183628]">
+          <BrandMark size={52} />
+          <h4 className="font-display mt-4 text-2xl font-bold">Explore Ed-Bridge</h4>
           <p className="mt-2 max-w-xs text-sm text-muted-foreground">
             Preview the live network as a student, supporter, community, or partner organization.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Button asChild variant="hero" size="lg">
               <Link to="/explore-support">
-                Explore Ed-Bridge <ArrowRight className="h-4 w-4" />
+                Explore Support <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
@@ -287,7 +284,7 @@ function StoryStage({ activeChapter }: { activeChapter: number }) {
       )}
 
       <p className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-        <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-[#2F9E62] dark:text-[#A8F0C4]" />
+        <ShieldCheck className="h-4 w-4 shrink-0 text-primary" />
         <span>{CHAPTERS[activeChapter]?.detail}</span>
       </p>
     </div>
@@ -330,21 +327,25 @@ export function LandingStory() {
     <section
       ref={containerRef}
       aria-label="How Ed-Bridge connects students"
-      className="border-y border-border bg-[#F5F7F6] py-20 text-foreground dark:bg-[#1B1F1E]"
+      className="border-y border-border bg-secondary/45 py-20 text-foreground"
     >
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-14 max-w-2xl">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#2F9E62] dark:text-[#A8F0C4]">
-            The Story
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-12 max-w-2xl">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            How Ed-Bridge Works
           </p>
-          <h2 className="font-display mt-2 text-3xl font-semibold tracking-tight sm:text-5xl">
+          <h2 className="font-display mt-2 text-3xl font-bold tracking-tight sm:text-5xl">
             From isolation to a trusted circle.
           </h2>
+          <p className="mt-3 text-base text-muted-foreground">
+            Scroll through the 6-step story to see how quiet verification, alumni trust, and
+            non-cash help keep Makerere students enrolled.
+          </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+        <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
           {/* Narrative chapters */}
-          <div className="space-y-5 lg:space-y-8">
+          <div className="space-y-4 lg:space-y-6">
             {CHAPTERS.map((chapter, index) => {
               const isActive = activeChapter === index;
               return (
@@ -354,28 +355,28 @@ export function LandingStory() {
                   data-story-chapter={index}
                   onClick={() => setActiveChapter(index)}
                   className={cn(
-                    "block w-full rounded-2xl border p-6 text-left transition-all duration-300",
+                    "block w-full rounded-3xl border p-6 text-left transition-all duration-300",
                     isActive
-                      ? "border-[#2F9E62]/55 bg-white shadow-[0_14px_34px_-16px_rgba(47,158,98,0.25)] dark:bg-[#222726]"
-                      : "border-border/80 bg-white/55 opacity-75 hover:bg-white hover:opacity-100 dark:bg-white/[0.03]",
+                      ? "border-primary/50 bg-card shadow-[var(--shadow-elegant)]"
+                      : "border-border/80 bg-card/60 opacity-75 hover:bg-card hover:opacity-100",
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <span
                       className={cn(
-                        "inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold",
+                        "inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold",
                         isActive
-                          ? "bg-[#A8F0C4] text-[#1B1F1E]"
-                          : "border border-border bg-[#F5F7F6] text-muted-foreground dark:bg-white/5",
+                          ? "bg-[#CEF8A6] text-[#132B1F]"
+                          : "border border-border bg-secondary text-muted-foreground",
                       )}
                     >
                       {chapter.number}
                     </span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#2F9E62] dark:text-[#A8F0C4]">
+                    <span className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
                       {chapter.eyebrow}
                     </span>
                   </div>
-                  <h3 className="font-display mt-3 text-xl font-semibold tracking-tight sm:text-2xl">
+                  <h3 className="font-display mt-3 text-xl font-bold tracking-tight sm:text-2xl">
                     {chapter.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -386,7 +387,7 @@ export function LandingStory() {
             })}
           </div>
 
-          {/* Sticky visual stage */}
+          {/* Sticky 3D / SVG visual stage */}
           <div className="lg:sticky lg:top-24">
             <StoryStage activeChapter={activeChapter} />
           </div>

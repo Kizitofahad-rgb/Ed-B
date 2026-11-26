@@ -117,8 +117,13 @@ function AdminScreen() {
                     <StatusBadge status={req.status} />
                   </div>
 
-                  <div className="mt-2">
+                  <div className="mt-2 flex flex-wrap gap-1.5">
                     <ShieldedIdentityBadge disclosureLevel={req.disclosureLevel} />
+                    {req.referringPartnerName ? (
+                      <span className="inline-flex items-center rounded-full bg-[#D1FAE5]/70 px-2.5 py-1 text-[11px] font-semibold text-[#064E3B] dark:bg-[#064E3B]/45 dark:text-[#6EE7B7]">
+                        Partner Referral: {req.referringPartnerName}
+                      </span>
+                    ) : null}
                   </div>
 
                   <h3 className="mt-2 text-sm font-bold text-foreground">{req.title}</h3>
@@ -190,9 +195,15 @@ function AdminScreen() {
                 </p>
                 <p>Audience Scope: {AUDIENCE_META[inspected.audienceScope].label}</p>
                 <p>Settlement Mode: {DISBURSEMENT_META[inspected.disbursementMode].label}</p>
+                {inspected.referringPartnerName ? (
+                  <p className="font-semibold text-[var(--success)]">
+                    Partner Referral Channel: {inspected.referringPartnerName}
+                  </p>
+                ) : null}
                 <hr className="border-border" />
                 <p>• Makerere Student ID: Verified (Active Sem 2)</p>
                 <p>• Bursar / Vendor Quote: Attached &amp; matched</p>
+                <p>• Voluntary Informed Consent &amp; Non-Guarantee Notice: Confirmed</p>
                 <p className="font-semibold text-[var(--success)]">
                   • Classmate Privacy: Protected (Never leaked publicly)
                 </p>

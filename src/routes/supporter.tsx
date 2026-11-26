@@ -55,7 +55,7 @@ function SupporterDashboardScreen() {
     <AppShell>
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-6">
         {/* Supporter Consistency Streak Banner */}
-        <section className="rounded-[20px] border border-primary/25 bg-accent/55 p-4 dark:bg-[#20307A]/45">
+        <section className="rounded-3xl border border-primary/25 bg-[#E8F8EE]/70 p-4 dark:bg-[#183628]/60">
           <div className="flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Flame className="h-5.5 w-5.5" />

@@ -28,6 +28,7 @@ function OnboardingScreen() {
   const [bio, setBio] = useState("Second-year CS student organizing weekend peer coding sessions.");
   const [defaultShielded, setDefaultShielded] = useState(true);
   const [studentIdAttached, setStudentIdAttached] = useState(true);
+  const [consentAccepted, setConsentAccepted] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const handleNext = () => {
@@ -39,8 +40,8 @@ function OnboardingScreen() {
       setError("Please enter your university and course.");
       return;
     }
-    if (step === 3 && !studentIdAttached) {
-      setError("Attach a Student ID check to complete verification.");
+    if (step === 3 && (!studentIdAttached || !consentAccepted)) {
+      setError("Attach a Student ID check and confirm voluntary informed consent.");
       return;
     }
     setError(null);
@@ -169,13 +170,13 @@ function OnboardingScreen() {
                 type="button"
                 onClick={() => setDefaultShielded(true)}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-[14px] border p-3.5 text-left",
+                  "flex w-full items-center gap-3 rounded-2xl border p-3.5 text-left transition-colors",
                   defaultShielded
-                    ? "border-[#312E81] bg-[#E0E7FF] text-[#312E81]"
+                    ? "border-primary bg-[#E8F8EE] text-[#132B1F] dark:bg-[#183628] dark:text-[#CEF8A6]"
                     : "border-border bg-secondary/40 text-foreground",
                 )}
               >
-                <EyeOff className="h-5 w-5 shrink-0 text-[#312E81]" />
+                <EyeOff className="h-5 w-5 shrink-0 text-primary" />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold">Shielded Alias Default (Recommended)</p>
                   <p className="mt-0.5 text-[11px] opacity-85">
@@ -187,7 +188,7 @@ function OnboardingScreen() {
                   type="radio"
                   checked={defaultShielded}
                   onChange={() => setDefaultShielded(true)}
-                  className="h-4 w-4 accent-[#312E81]"
+                  className="h-4 w-4 accent-primary"
                 />
               </button>
 
@@ -241,6 +242,26 @@ function OnboardingScreen() {
                   }}
                   className="h-4.5 w-4.5 accent-[#059669]"
                 />
+              </label>
+
+              <label className="flex items-start gap-2.5 rounded-xl border border-border bg-secondary/40 p-3 text-[11px] leading-relaxed">
+                <input
+                  type="checkbox"
+                  checked={consentAccepted}
+                  onChange={(e) => {
+                    setConsentAccepted(e.target.checked);
+                    setError(null);
+                  }}
+                  className="mt-0.5 h-4 w-4 accent-primary"
+                />
+                <span>
+                  <strong className="text-foreground">
+                    Voluntary Participation &amp; Consent:
+                  </strong>{" "}
+                  My enrollment details are used solely to verify eligibility with reviewers or
+                  consented partners, never shared publicly without permission, and registration
+                  does not guarantee financial aid.
+                </span>
               </label>
             </div>
           )}

@@ -52,7 +52,8 @@ export const Route = createFileRoute("/student")({
 
 function StudentDashboardScreen() {
   const navigate = useNavigate();
-  const { requests, joinedCommunities, onboarded, createRequest } = useEdBridge();
+  const { requests, joinedCommunities, onboarded, createRequest, stakeholderPartners } =
+    useEdBridge();
   const currentUser = peopleById[CURRENT_USER_ID];
   const myRequests = requests.filter((r) => r.personId === CURRENT_USER_ID);
 
@@ -65,6 +66,8 @@ function StudentDashboardScreen() {
   const [disclosure, setDisclosure] = useState<DisclosureLevel>("shielded-alias");
   const [audience, setAudience] = useState<AudienceScope>("alumni-mentors-only");
   const [disbursement, setDisbursement] = useState<DisbursementMode>("direct-bursar");
+  const [referringPartnerId, setReferringPartnerId] = useState("");
+  const [consentConfirmed, setConsentConfirmed] = useState(false);
   const [showPeerPreview, setShowPeerPreview] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,6 +93,13 @@ function StudentDashboardScreen() {
       setError("Context must be at least 20 characters for reviewers.");
       return;
     }
+    if (!consentConfirmed) {
+      setError(
+        "Please confirm voluntary consent and acknowledge that submitting does not guarantee aid.",
+      );
+      return;
+    }
+    const partnerObj = stakeholderPartners.find((p) => p.id === referringPartnerId);
     const amt = Number(amountText) > 0 ? Number(amountText) : undefined;
     const newId = createRequest({
       title,
@@ -102,11 +112,16 @@ function StudentDashboardScreen() {
       disclosureLevel: disclosure,
       audienceScope: audience,
       disbursementMode: disbursement,
+      referringPartnerId: partnerObj?.id,
+      referringPartnerName: partnerObj?.shortName,
+      consentConfirmed,
     });
     setShowCreateDialog(false);
     setTitle("");
     setNeed("");
     setWhy("");
+    setReferringPartnerId("");
+    setConsentConfirmed(false);
     toast.success("Shielded request submitted for human verification");
     navigate({ to: "/support/$id", params: { id: newId } });
   };
@@ -179,7 +194,7 @@ function StudentDashboardScreen() {
             value={myRequests.length}
             caption="Private or circle-scoped"
             icon={EyeOff}
-            accentColorClass="bg-[#E0E7FF] text-[#312E81] dark:bg-[#312E81]/50 dark:text-[#E0E7FF]"
+            accentColorClass="bg-[#E8F8EE] text-[#018749] dark:bg-[#183628] dark:text-[#CEF8A6]"
           />
         </div>
 
@@ -278,7 +293,7 @@ function StudentDashboardScreen() {
         <DialogContent className="max-h-[90vh] max-w-lg overflow-y-auto bg-card">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-[#312E81] dark:text-[#8B9EFF]" />
+              <Shield className="h-5 w-5 text-primary" />
               New Dignified Request
             </DialogTitle>
           </DialogHeader>
@@ -432,6 +447,41 @@ function StudentDashboardScreen() {
               placeholder="Target Amount UGX (optional for mentorship)"
               className="h-10 w-full rounded-xl border border-border bg-background px-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
             />
+
+            <div>
+              <p className="mb-1 text-xs font-bold">
+                5. Optional Association / Welfare Focal Referral
+              </p>
+              <select
+                value={referringPartnerId}
+                onChange={(e) => setReferringPartnerId(e.target.value)}
+                className="h-10 w-full rounded-xl border border-border bg-background px-3 text-xs text-foreground focus:border-primary focus:outline-none"
+              >
+                <option value="">Self-submitted (No association endorsement)</option>
+                {stakeholderPartners.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.shortName} — Consented Referral Channel
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <label className="flex items-start gap-2.5 rounded-xl border border-border bg-secondary/40 p-2.5 text-[11px] leading-relaxed">
+              <input
+                type="checkbox"
+                checked={consentConfirmed}
+                onChange={(e) => {
+                  setConsentConfirmed(e.target.checked);
+                  setError(null);
+                }}
+                className="mt-0.5 h-4 w-4 accent-primary"
+              />
+              <span>
+                <strong className="text-foreground">Voluntary Informed Consent:</strong> I consent
+                to private review of my enrollment &amp; invoice only for verified support matching,
+                and understand that submitting a request does not guarantee financial aid.
+              </span>
+            </label>
 
             {error ? <p className="text-xs font-semibold text-destructive">{error}</p> : null}
           </div>

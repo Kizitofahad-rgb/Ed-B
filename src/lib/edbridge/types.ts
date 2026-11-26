@@ -89,6 +89,13 @@ export interface SupportRequest {
   aliasLabel: string;
   matchingSponsor?: string;
   updates: RequestUpdate[];
+  referringPartnerId?: string;
+  referringPartnerName?: string;
+  consentRecord?: {
+    informedOfPurpose: boolean;
+    nonGuaranteeAcknowledged: boolean;
+    consentedAt: string;
+  };
 }
 
 export interface Opportunity {
@@ -106,9 +113,15 @@ export interface Opportunity {
   location: string;
   compensation: string;
   closesInDays: number;
+  deadlineDate?: string;
   summary: string;
   matchReason: string;
   communities: string[];
+  fundingPartner?: string;
+  eligibilityCriteria?: string[];
+  applicationSteps?: string[];
+  fairAccessNotice?: string;
+  partnerId?: string;
 }
 
 export interface Organization {
@@ -121,6 +134,95 @@ export interface Organization {
   opportunitiesCreated: number;
   blurb: string;
   planTier: string;
+}
+
+export type PartnerAgreementStatus = "proposed-framework" | "pilot-active" | "mou-signed";
+
+export interface PartnerCommitment {
+  area:
+    | "Transparency"
+    | "Accountability"
+    | "Student welfare"
+    | "Data protection"
+    | "Fair access"
+    | "Institutional respect"
+    | "Sustainability";
+  mutualCommitment: string;
+  platformControl: string;
+}
+
+export interface PartnerNextStep {
+  id: string;
+  label: string;
+  done: boolean;
+}
+
+export interface StakeholderPartner {
+  id: string;
+  name: string;
+  shortName: string;
+  kind: string;
+  blurb: string;
+  planTier: string;
+  status: PartnerAgreementStatus;
+  authorization: {
+    nameAndLogoAuthorized: boolean;
+    databaseAccessProhibited: true;
+    zeroFinancialLiability: true;
+    independentGovernancePreserved: true;
+    voluntaryConsentRequired: true;
+  };
+  focalPersons: {
+    partnerFocal: string;
+    partnerRole: string;
+    edBridgeFocal: string;
+    lastJointMeeting?: string;
+  };
+  hallsAndColleges: string[];
+  metrics: {
+    studentsReached: number;
+    referralsSubmitted: number;
+    verificationsConfirmed: number;
+    bursariesMatched: number;
+    capacitySessions: number;
+    campaigns: number;
+    mentorshipSessions: number;
+  };
+  commitments: PartnerCommitment[];
+  nextSteps: PartnerNextStep[];
+}
+
+export interface StudentReferral {
+  id: string;
+  partnerId: string;
+  aliasLabel: string;
+  hallOrCollege: string;
+  courseAndYear: string;
+  category: RequestCategory;
+  shielded: boolean;
+  consentConfirmed: boolean;
+  nonGuaranteeAcknowledged: boolean;
+  consentScopeNote: string;
+  referralSummary: string;
+  membershipVerificationStatus:
+    "pending-partner-check" | "confirmed-with-consent" | "routed-to-aid";
+  referredByFocal: string;
+  createdAt: string;
+  linkedRequestId?: string;
+}
+
+export interface JointFundRecord {
+  id: string;
+  partnerId: string;
+  referenceCode: string;
+  title: string;
+  beneficiaryAlias: string;
+  settlementChannel: string;
+  amountVerified: number;
+  partnerSignOff: string;
+  edBridgeSignOff: string;
+  date: string;
+  verified: boolean;
 }
 
 export type Privacy = "private" | "recognized" | "public";

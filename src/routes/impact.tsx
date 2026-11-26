@@ -85,7 +85,7 @@ function ImpactPassportScreen() {
               checked={hidePublicIdentity}
               onChange={(e) => setHidePublicIdentity(e.target.checked)}
               aria-label="Private Public-Ledger Mode"
-              className="h-4.5 w-4.5 shrink-0 accent-[#312E81]"
+              className="h-4.5 w-4.5 shrink-0 accent-primary"
             />
           </div>
         </section>

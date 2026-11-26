@@ -8,20 +8,20 @@ interface ThemeCtx {
   toggleTheme: () => void;
 }
 
-const THEME_KEY = "edbridge.theme.v2";
+const THEME_KEY = "edbridge.theme.v3";
 const ThemeContext = createContext<ThemeCtx | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>("dark");
+  const [theme, setThemeState] = useState<ThemeMode>("light");
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem(THEME_KEY) as ThemeMode | null;
-      const initial: ThemeMode = saved === "light" || saved === "dark" ? saved : "dark";
+      const initial: ThemeMode = saved === "light" || saved === "dark" ? saved : "light";
       setThemeState(initial);
       document.documentElement.classList.toggle("dark", initial === "dark");
     } catch {
-      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("dark");
     }
   }, []);
 
