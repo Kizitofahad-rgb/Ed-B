@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Ed-Bridge metallic broken-spine EB pulse logo (/assets/edbridge/img_edbridge_logo.jpg)
+ * Ed-Bridge broken-spine EB graduation-cap logo (/assets/edbridge/img_edbridge_logo.png)
  */
 export function BrandMark({
   className,
@@ -18,16 +18,16 @@ export function BrandMark({
     <span
       style={{ width: size, height: size }}
       className={cn(
-        "relative inline-flex shrink-0 overflow-hidden rounded-[10px] bg-[#16191B] ring-1 ring-[#6EE7B7]/30",
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#132B1F] p-1 ring-1 ring-[#02A95C]/40 shadow-xs",
         className,
       )}
     >
       <img
-        src="/assets/edbridge/img_edbridge_logo.jpg"
+        src="/assets/edbridge/img_edbridge_logo.png"
         alt="Ed-Bridge Logo"
         width={size}
         height={size}
-        className="h-full w-full scale-[1.12] object-cover"
+        className="h-full w-full object-contain"
       />
     </span>
   );
@@ -83,7 +83,7 @@ export function EdBridgeLoader({
 }
 
 /**
- * Splash overlay matching SplashScreen.kt on first session load (click anywhere to enter immediately).
+ * Splash overlay on first session load (click anywhere to enter immediately).
  */
 export function SplashScreenOverlay() {
   const [visible, setVisible] = useState(false);
@@ -135,11 +135,11 @@ export function SplashScreenOverlay() {
         className="pointer-events-none absolute h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(168,240,196,0.34),rgba(2,169,92,0.18),transparent)] blur-2xl"
       />
       <div className="relative flex flex-col items-center">
-        <div className="overflow-hidden rounded-[28px] border border-[#CEF8A6]/40 bg-[#16191B] shadow-2xl">
+        <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-[28px] border border-[#CEF8A6]/40 bg-[#132B1F] p-4 shadow-2xl">
           <img
-            src="/assets/edbridge/img_edbridge_logo.jpg"
-            alt="Ed-Bridge monogram logo"
-            className="h-32 w-32 scale-[1.12] object-cover"
+            src="/assets/edbridge/img_edbridge_logo.png"
+            alt="Ed-Bridge graduation cap monogram logo"
+            className="h-full w-full object-contain"
           />
         </div>
         <h1 className="font-display mt-6 text-4xl font-extrabold tracking-tight text-white">
@@ -164,6 +164,6 @@ export function SplashScreenOverlay() {
   );
 }
 
-/** Metallic broken-spine EB pulse favicon matching the updated Ed-Bridge logo */
+/** Graduation-cap broken-spine EB favicon matching the new Ed-Bridge logo */
 export const EDBRIDGE_FAVICON_DATA_URI =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2316191B'/%3E%3Cpath d='M20 17h16c7 0 11 4 11 10 0 3.5-2 6-5 7.5 3.5 1.5 5.5 4.2 5.5 8 0 6.5-4.5 10.5-11.5 10.5H20' fill='none' stroke='%23E2E8F0' stroke-width='4.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='31' y1='17' x2='31' y2='28' stroke='%23E2E8F0' stroke-width='4.8' stroke-linecap='round'/%3E%3Cline x1='31' y1='39' x2='31' y2='53' stroke='%23E2E8F0' stroke-width='4.8' stroke-linecap='round'/%3E%3Cpolyline points='16,34 26,34 29,26 33,43 37,29 40,34 49,34' fill='none' stroke='%236EE7B7' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='12' cy='34' r='2.5' fill='%236EE7B7'/%3E%3C/svg%3E";
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23132B1F'/%3E%3Cpath d='M18 17h18c7 0 11 4 11 10M47 41c0 6.5-4.5 11-11.5 11H18' fill='none' stroke='%23FFFFFF' stroke-width='4.8' stroke-linecap='round'/%3E%3Cline x1='31' y1='17' x2='31' y2='25' stroke='%23FFFFFF' stroke-width='4.8' stroke-linecap='round'/%3E%3Cline x1='31' y1='42' x2='31' y2='52' stroke='%23FFFFFF' stroke-width='4.8' stroke-linecap='round'/%3E%3Cpolygon points='32,25 48,31 32,37 16,31' fill='%23FFFFFF'/%3E%3Cpath d='M23 34v5l9 4 9-4v-5' fill='%23FFFFFF'/%3E%3Cpath d='M32 31h10v13' fill='none' stroke='%238CE99A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Crect x='40.3' y='43' width='3.4' height='6' rx='1.5' fill='%238CE99A'/%3E%3C/svg%3E";

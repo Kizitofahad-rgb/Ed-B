@@ -49,7 +49,7 @@ const desktopNavLinks = [
   { to: "/explore-support", label: "Support" },
   { to: "/discover", label: "Circle" },
   { to: "/explore-communities", label: "Circles" },
-  { to: "/opportunities", label: "Gigs & Bursaries" },
+  { to: "/opportunities", label: "Businesses & Bursaries" },
   { to: "/impact", label: "Impact" },
   { to: "/organization", label: "Partners" },
 ] as const;
@@ -161,8 +161,8 @@ export function SiteHeader() {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Link
             to="/opportunities"
-            aria-label="Paid Gigs & Opportunities"
-            title="Paid Gigs & Opportunities"
+            aria-label="Student Businesses & Bursaries"
+            title="Student Businesses & Bursaries"
             className="inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/85 transition-colors hover:bg-secondary hover:text-foreground lg:hidden"
           >
             <Briefcase className="h-4.5 w-4.5" />
@@ -221,7 +221,7 @@ export function SiteHeader() {
                 <Handshake className="mr-2 h-4 w-4" /> Supporter Hub &amp; Streak
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate({ to: "/opportunities" })}>
-                <Briefcase className="mr-2 h-4 w-4" /> Opportunities &amp; Paid Gigs
+                <Briefcase className="mr-2 h-4 w-4" /> Student Businesses &amp; Bursaries
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
@@ -317,7 +317,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link to="/opportunities" className="hover:text-primary">
-                  Paid Gigs &amp; Bursaries
+                  Student Businesses &amp; Bursaries
                 </Link>
               </li>
               <li>

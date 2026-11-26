@@ -176,7 +176,7 @@ function StudentDashboardScreen() {
               onClick={() => navigate({ to: "/opportunities" })}
               className="h-12 rounded-xl"
             >
-              <Briefcase className="h-4.5 w-4.5" /> Paid Gigs
+              <Briefcase className="h-4.5 w-4.5" /> Small Businesses
             </Button>
           </div>
         </section>
@@ -244,7 +244,7 @@ function StudentDashboardScreen() {
         {/* Why Students Stay Every Week */}
         <SectionHeader
           title="Why Students Stay Every Week"
-          subtitle="Your circle also unlocks paid work & peer mentoring"
+          subtitle="Your circle also backs student small businesses & peer mentoring"
         />
         <div className="divide-y divide-border rounded-2xl border border-border bg-card p-3.5 shadow-[var(--shadow-card)]">
           <div className="flex items-center gap-3 pb-3">
@@ -252,9 +252,11 @@ function StudentDashboardScreen() {
               <Briefcase className="h-4.5 w-4.5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold text-foreground">Part-time Campus Data Assistant</p>
+              <p className="text-xs font-bold text-foreground">
+                Student Small Businesses &amp; Ventures
+              </p>
               <p className="text-xs text-muted-foreground">
-                UGX 220,000/mo · Matched to your CoCIS profile
+                Showcase your venture so classmates support you &amp; peers hire one another
               </p>
             </div>
             <Button
@@ -263,7 +265,7 @@ function StudentDashboardScreen() {
               onClick={() => navigate({ to: "/opportunities" })}
               className="text-primary"
             >
-              View Gigs
+              Businesses
             </Button>
           </div>
           <div className="flex items-center gap-3 pt-3">

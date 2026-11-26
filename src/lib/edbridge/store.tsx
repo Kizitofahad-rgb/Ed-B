@@ -165,6 +165,23 @@ interface Ctx extends State {
     eligibilityCriteria: string[];
     applicationSteps: string[];
   }) => string;
+  createStudentBusiness: (input: {
+    title: string;
+    businessCategory: string;
+    founderLabel: string;
+    location: string;
+    compensation: string;
+    summary: string;
+    productsOrServices: string[];
+    hiringStudents: boolean;
+    hiringNote?: string;
+    communities?: string[];
+  }) => string;
+  supportStudentBusiness: (
+    businessId: string,
+    action: "patronize" | "boost" | "refer-peer",
+    note?: string,
+  ) => void;
   markAllRead: () => void;
   totals: {
     studentsSupported: number;
@@ -177,7 +194,7 @@ interface Ctx extends State {
   reset: () => void;
 }
 
-const KEY = "edbridge.prototype.v2";
+const KEY = "edbridge.prototype.v3";
 const C = createContext<Ctx | null>(null);
 
 const initial: State = {
@@ -202,7 +219,7 @@ const initial: State = {
 const supportLabel: Record<string, string> = {
   mentorship: "Offered mentorship",
   resource: "Offered a resource / equipment loan",
-  opportunity: "Referred a paid opportunity",
+  opportunity: "Referred a student business or bursary",
   referral: "Made a warm referral",
   amplification: "Amplified to community circle",
 };
@@ -903,6 +920,94 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
     return id;
   };
 
+  const createStudentBusiness: Ctx["createStudentBusiness"] = (input) => {
+    const id = `biz-${uid()}`;
+    const newBiz: Opportunity = {
+      id,
+      title: input.title.trim(),
+      org: `Student Venture · ${input.businessCategory}`,
+      fundingPartner: `Founded by ${input.founderLabel.trim()}`,
+      founderLabel: input.founderLabel.trim(),
+      businessCategory: input.businessCategory,
+      kind: "Student Business",
+      location: input.location.trim(),
+      compensation: input.compensation.trim(),
+      closesInDays: 30,
+      deadlineDate: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+      summary: input.summary.trim(),
+      matchReason: "Listed directly by a verified student founder in your campus community.",
+      communities: input.communities?.length ? input.communities : ["cocis", "mak-alumni"],
+      productsOrServices: input.productsOrServices,
+      patronsCount: 1,
+      boostedCount: 1,
+      hiringStudents: input.hiringStudents,
+      hiringNote: input.hiringNote?.trim() || undefined,
+      eligibilityCriteria: [
+        "Open to fellow students, alumni & campus community supporters",
+        "Supports student self-reliance and peer employment",
+      ],
+      applicationSteps: [
+        "Tap Support / Order to patronize or connect with the founder",
+        "Tap Boost to Circle to help more classmates & alumni notice this business",
+      ],
+      fairAccessNotice:
+        "Verified student-founded small business on Ed-Bridge. Direct patronage helps founders stay enrolled and team up with peers.",
+    };
+
+    update((s) => ({
+      ...s,
+      opportunities: [newBiz, ...s.opportunities],
+      notifications: notify(s, {
+        title: "Student business spotlight published",
+        body: `${newBiz.title} is now discoverable across your campus & alumni circle.`,
+        tone: "opportunity",
+      }),
+    }));
+
+    return id;
+  };
+
+  const supportStudentBusiness: Ctx["supportStudentBusiness"] = (businessId, action, note) =>
+    update((s) => {
+      const target = s.opportunities.find((o) => o.id === businessId);
+      const bizTitle = target?.title ?? "Student Business";
+      const label =
+        action === "patronize"
+          ? "Patronized student business"
+          : action === "refer-peer"
+            ? "Referred peer collaborator to student business"
+            : "Boosted student business to circle";
+
+      return {
+        ...s,
+        opportunities: s.opportunities.map((o) =>
+          o.id === businessId
+            ? {
+                ...o,
+                patronsCount: action === "patronize" ? (o.patronsCount ?? 0) + 1 : o.patronsCount,
+                boostedCount: action !== "patronize" ? (o.boostedCount ?? 0) + 1 : o.boostedCount,
+              }
+            : o,
+        ),
+        impact: [
+          {
+            id: uid(),
+            date: today(),
+            type: action === "boost" ? "amplification" : "opportunity",
+            label,
+            detail: note ? `${bizTitle} — ${note}` : bizTitle,
+            privacy: "recognized",
+          },
+          ...s.impact,
+        ],
+        notifications: notify(s, {
+          title: label,
+          body: `${bizTitle} gained your support in the campus community.`,
+          tone: "opportunity",
+        }),
+      };
+    });
+
   const completeOnboarding: Ctx["completeOnboarding"] = (opts) =>
     update((s) => ({
       ...s,
@@ -953,6 +1058,8 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
       submitConsentedReferral,
       confirmReferralMembership,
       publishPartnerOpportunity,
+      createStudentBusiness,
+      supportStudentBusiness,
       markAllRead: () =>
         update((s) => ({
           ...s,

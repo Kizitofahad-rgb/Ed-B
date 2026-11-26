@@ -115,7 +115,7 @@ function SupportDetailScreen() {
   const nonFinancialTypes: { type: Exclude<SupportType, "financial">; label: string }[] = [
     { type: "mentorship", label: "Offer 1-on-1 Mentorship" },
     { type: "resource", label: "Lend Laptop / Textbooks" },
-    { type: "opportunity", label: "Refer Paid Gig / Internship" },
+    { type: "opportunity", label: "Refer Student Business / Opportunity" },
     { type: "referral", label: "Make Warm Alumni Referral" },
     { type: "amplification", label: "Amplify to Alumni Circle" },
   ];

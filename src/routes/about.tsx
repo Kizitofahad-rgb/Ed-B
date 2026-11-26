@@ -41,12 +41,12 @@ function AboutScreen() {
         <PillarCard
           icon={Handshake}
           title="2. Six Ways to Help Beyond Cash"
-          body="Financial settlement is only one path. Supporters also mentor, lend spare laptops, refer paid campus gigs, share internships, and amplify within trusted circles."
+          body="Financial settlement is only one path. Supporters also mentor, lend spare laptops, back student small businesses, share internships, and amplify within trusted circles."
         />
         <PillarCard
           icon={Repeat}
           title="3. Built for Ongoing Attachment"
-          body="Students stay weekly for paid campus opportunities & peer mentorship; supporters build a Verified Impact Passport & consistency streak; organizations pay for cohort audit & matching SaaS."
+          body="Students return to support and grow one another's small businesses (and even hire peers); supporters build a Verified Impact Passport & consistency streak; organizations use governed partner charters."
         />
 
         <div className="space-y-2 pt-1">

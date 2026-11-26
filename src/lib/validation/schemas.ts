@@ -58,6 +58,7 @@ export const OpportunitySchema = z.object({
   title: z.string().min(5, "Title is required"),
   org: z.string().min(2, "Organization name is required"),
   kind: z.enum([
+    "Student Business",
     "Internship",
     "Scholarship",
     "Mentorship",

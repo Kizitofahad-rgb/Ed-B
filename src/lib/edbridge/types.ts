@@ -103,6 +103,7 @@ export interface Opportunity {
   title: string;
   org: string;
   kind:
+    | "Student Business"
     | "Internship"
     | "Scholarship"
     | "Mentorship"
@@ -122,6 +123,13 @@ export interface Opportunity {
   applicationSteps?: string[];
   fairAccessNotice?: string;
   partnerId?: string;
+  businessCategory?: string;
+  founderLabel?: string;
+  patronsCount?: number;
+  boostedCount?: number;
+  hiringStudents?: boolean;
+  hiringNote?: string;
+  productsOrServices?: string[];
 }
 
 export interface Organization {

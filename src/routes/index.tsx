@@ -71,11 +71,11 @@ const helpCategories = [
     badge: "Equipment",
   },
   {
-    title: "Paid Campus Gigs",
-    desc: "Lab assistantships, research roles, and internships that build income.",
+    title: "Student Small Businesses",
+    desc: "Notice, order from & boost student-founded ventures so peers earn and hire one another.",
     icon: Briefcase,
     to: "/opportunities",
-    badge: "Dignified Work",
+    badge: "Peer Commerce",
   },
   {
     title: "Financial Literacy & Training",
@@ -128,7 +128,7 @@ function HomeScreen() {
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Ed-Bridge turns your real academic communities — College, Course, Hall, Secondary
               School Alumni &amp; partner associations — into a verified, private safety net for
-              tuition, sustenance, mentorship, equipment, and paid work.
+              tuition, sustenance, mentorship, equipment, and student-owned small businesses.
             </p>
 
             {/* Primary Dual CTAs */}
@@ -243,7 +243,9 @@ function HomeScreen() {
               <p className="mt-0.5 text-xs font-semibold text-foreground">
                 Cash &amp; Non-Cash Help
               </p>
-              <p className="text-[11px] text-muted-foreground">Mentorship, laptops, paid gigs</p>
+              <p className="text-[11px] text-muted-foreground">
+                Mentorship, laptops, small businesses
+              </p>
             </div>
             <div>
               <p className="font-display text-2xl font-extrabold text-foreground sm:text-3xl">
@@ -282,8 +284,8 @@ function HomeScreen() {
       <section className="mx-auto max-w-7xl px-4 pb-16 pt-4 sm:px-6 lg:px-8">
         <SectionHeader
           title="6 Ways to Support Beyond Money"
-          subtitle="Fund tuition directly, lend equipment, mentor a classmate, or share paid gigs"
-          actionLabel="See paid gigs & aid"
+          subtitle="Fund tuition directly, lend equipment, mentor a classmate, or back student small businesses"
+          actionLabel="Explore businesses & aid"
           actionTo="/opportunities"
         />
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -470,7 +472,7 @@ function HomeScreen() {
                     />
                     <CompareRowDark
                       title="Ongoing Attachment & Partner Charters"
-                      body="Students return weekly for paid gigs & paying it forward; alumni build an Impact Passport; associations use governed charters."
+                      body="Students return to grow & support each other's small businesses (even hiring peers), alumni build an Impact Passport, and orgs use governed charters."
                       isGood={true}
                     />
                   </>
@@ -535,7 +537,7 @@ function HomeScreen() {
                 onClick={() => navigate({ to: "/opportunities" })}
                 className="h-11"
               >
-                Paid Gigs &amp; Bursaries
+                Businesses &amp; Bursaries
               </Button>
               <Button onClick={() => navigate({ to: "/onboarding" })} className="h-11">
                 Join 4-Step Verified
