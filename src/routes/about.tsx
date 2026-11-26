@@ -1,12 +1,14 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { EyeOff, Handshake, Repeat } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { ArrowLeft, EyeOff, Handshake, Repeat, ShieldCheck } from "lucide-react";
 import { AppShell } from "@/components/edbridge/AppShell";
+import { BrandMark } from "@/components/edbridge/BrandMark";
 import { Button } from "@/components/ui/button";
 import { useEdBridge } from "@/lib/edbridge/store";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
-    meta: [{ title: "About Ed-Bridge — We rise by lifting others." }],
+    meta: [{ title: "About Ed-Bridge" }],
   }),
   component: AboutScreen,
 });
@@ -17,69 +19,86 @@ function AboutScreen() {
 
   return (
     <AppShell>
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-4 sm:px-6 sm:py-6">
-        <section className="rounded-[20px] border border-border bg-card p-5 shadow-[var(--shadow-card)]">
-          <h1 className="font-display text-2xl font-extrabold text-foreground">About Ed-Bridge</h1>
-          <p className="mt-2 text-sm font-semibold text-primary">
-            We rise by lifting others — without forcing students to broadcast personal hardship to
-            the public.
-          </p>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-            Traditional crowdfunding forces students into a painful privacy paradox: expose your
-            financial struggle to classmates or drop out quietly. Ed-Bridge solves this by verifying
-            enrollment &amp; invoices privately, protecting identity with Shielded Aliases
-            (#EB-402), routing help through real academic &amp; alumni circles, and settling funds
-            directly to university bursars or hostel custodians.
-          </p>
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6 sm:px-6">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/" })}
+            aria-label="Back"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground hover:bg-secondary"
+          >
+            <ArrowLeft className="h-4.5 w-4.5" />
+          </button>
+          <h1 className="font-display text-lg font-bold">About Ed-Bridge</h1>
+        </div>
+
+        {/* Visual Editorial Banner */}
+        <section className="relative overflow-hidden rounded-3xl border border-border bg-[#132B1F] text-white shadow-[var(--shadow-elegant)]">
+          <img
+            src="/assets/edbridge/story_campus_circle.jpg"
+            alt="Makerere students collaborating"
+            className="ken-burns-soft h-52 w-full object-cover opacity-45"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-t from-[#0E2017] via-[#132B1F]/70 to-transparent"
+          />
+          <div className="absolute inset-x-6 bottom-5">
+            <div className="flex items-center gap-3">
+              <BrandMark size={44} />
+              <div>
+                <h2 className="font-display text-xl font-extrabold">Ed-Bridge</h2>
+                <p className="text-xs font-semibold text-[#CEF8A6]">Connect · Support · Grow</p>
+              </div>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-[#E2EFE7]">
+              Private alumni &amp; campus trust turning communities into verified tuition aid,
+              mentorship, and student-owned small businesses.
+            </p>
+          </div>
         </section>
 
-        <PillarCard
-          icon={EyeOff}
-          title="1. Dignified & Shielded Aid"
-          body="Students choose Shielded Alias + Alumni-Only scope so classmates never see their financial request, while alumni trust the 4-step verification badge."
-        />
-        <PillarCard
-          icon={Handshake}
-          title="2. Six Ways to Help Beyond Cash"
-          body="Financial settlement is only one path. Supporters also mentor, lend spare laptops, back student small businesses, share internships, and amplify within trusted circles."
-        />
-        <PillarCard
-          icon={Repeat}
-          title="3. Built for Ongoing Attachment"
-          body="Students return to support and grow one another's small businesses (and even hire peers); supporters build a Verified Impact Passport & consistency streak; organizations use governed partner charters."
-        />
+        <div className="grid gap-3 sm:grid-cols-3">
+          <PillarCard
+            icon={EyeOff}
+            title="Shielded Dignity"
+            body="Hide names from classmates while verifying IDs privately."
+          />
+          <PillarCard
+            icon={Handshake}
+            title="6 Ways to Help"
+            body="Back student ventures, lend laptops, mentor, or pay tuition."
+          />
+          <PillarCard
+            icon={Repeat}
+            title="Peer Commerce"
+            body="Students support each other's businesses and hire peers."
+          />
+        </div>
 
-        <div className="space-y-2 pt-1">
+        <div className="grid gap-2.5 sm:grid-cols-2">
           <Button
             onClick={() => {
               setRole("student");
               navigate({ to: "/student" });
             }}
-            className="h-12 w-full rounded-xl"
+            className="h-12"
           >
             Try Student Shielded Flow
           </Button>
           <Button
             variant="outline"
-            onClick={() => {
-              setRole("supporter");
-              navigate({ to: "/supporter" });
-            }}
-            className="h-12 w-full rounded-xl"
+            onClick={() => navigate({ to: "/opportunities" })}
+            className="h-12"
           >
-            Try Supporter Impact Flow
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setRole("organization");
-              navigate({ to: "/organization" });
-            }}
-            className="h-12 w-full rounded-xl"
-          >
-            Try Organization Cohort SaaS
+            Explore Student Businesses
           </Button>
         </div>
+
+        <p className="flex items-center justify-center gap-1.5 text-center text-xs text-muted-foreground">
+          <ShieldCheck className="h-4 w-4 text-primary" />
+          Direct Bursar Audit · Consent-Gated Partner Charters
+        </p>
       </div>
     </AppShell>
   );
@@ -90,22 +109,17 @@ function PillarCard({
   title,
   body,
 }: {
-  icon: typeof EyeOff;
+  icon: LucideIcon;
   title: string;
   body: string;
 }) {
   return (
-    <article className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 shadow-[var(--shadow-card)]">
-      <span
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px]"
-        style={{ backgroundColor: "var(--shield-bg)", color: "var(--shield-fg)" }}
-      >
+    <article className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#E8F8EE] text-primary dark:bg-[#183628]">
         <Icon className="h-5 w-5" />
       </span>
-      <div>
-        <h2 className="text-sm font-bold text-foreground">{title}</h2>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{body}</p>
-      </div>
+      <h3 className="font-display mt-3 text-sm font-bold text-foreground">{title}</h3>
+      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{body}</p>
     </article>
   );
 }

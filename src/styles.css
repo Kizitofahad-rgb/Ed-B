@@ -183,6 +183,42 @@
   }
 }
 
+@keyframes kenBurnsSoft {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.05) translate3d(-0.6%, -0.6%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+.ken-burns-soft {
+  animation: kenBurnsSoft 18s ease-in-out infinite;
+}
+
+.visual-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.visual-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-110%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.group:hover .visual-sheen::after,
+.visual-sheen:hover::after {
+  transform: translateX(120%) skewX(-18deg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

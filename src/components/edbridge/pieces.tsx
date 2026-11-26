@@ -383,7 +383,7 @@ export function SupportRequestCard({
           </div>
         </div>
       ) : coverPhoto ? (
-        <div className="relative h-36 w-full overflow-hidden bg-secondary">
+        <div className="visual-sheen relative h-36 w-full overflow-hidden bg-secondary">
           <img
             src={coverPhoto}
             alt={`${displayName} story`}

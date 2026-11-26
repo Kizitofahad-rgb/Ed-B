@@ -176,6 +176,7 @@ interface Ctx extends State {
     hiringStudents: boolean;
     hiringNote?: string;
     communities?: string[];
+    imageUrl?: string;
   }) => string;
   supportStudentBusiness: (
     businessId: string,
@@ -194,7 +195,7 @@ interface Ctx extends State {
   reset: () => void;
 }
 
-const KEY = "edbridge.prototype.v3";
+const KEY = "edbridge.prototype.v4";
 const C = createContext<Ctx | null>(null);
 
 const initial: State = {
@@ -942,6 +943,7 @@ export function EdBridgeProvider({ children }: { children: ReactNode }) {
       boostedCount: 1,
       hiringStudents: input.hiringStudents,
       hiringNote: input.hiringNote?.trim() || undefined,
+      imageUrl: input.imageUrl || "/assets/edbridge/biz_tech_repair.jpg",
       eligibilityCriteria: [
         "Open to fellow students, alumni & campus community supporters",
         "Supports student self-reliance and peer employment",

@@ -2,7 +2,6 @@ import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Bookmark,
-  Briefcase,
   CheckCircle2,
   ClipboardList,
   Handshake,
@@ -60,6 +59,13 @@ const businessCategories = [
   "Campus Retail",
 ] as const;
 
+const coverPresets = [
+  { label: "Tech & Laptop", url: "/assets/edbridge/biz_tech_repair.jpg" },
+  { label: "Food & Snacks", url: "/assets/edbridge/biz_fresh_bites.jpg" },
+  { label: "Design & Print", url: "/assets/edbridge/biz_print_studio.jpg" },
+  { label: "Tailoring & Crafts", url: "/assets/edbridge/biz_tailoring_studio.jpg" },
+] as const;
+
 function OpportunitiesScreen() {
   const {
     opportunities,
@@ -82,6 +88,7 @@ function OpportunitiesScreen() {
   const [bizTitle, setBizTitle] = useState("");
   const [bizCategory, setBizCategory] =
     useState<(typeof businessCategories)[number]>("Tech & Repairs");
+  const [bizCover, setBizCover] = useState<string>(coverPresets[0].url);
   const [bizFounder, setBizFounder] = useState("Kizito Fahad · BSc CS Yr 2");
   const [bizLocation, setBizLocation] = useState("");
   const [bizOffer, setBizOffer] = useState("");
@@ -127,15 +134,15 @@ function OpportunitiesScreen() {
 
   const handlePublishBusiness = () => {
     if (bizTitle.trim().length < 4) {
-      setFormError("Please enter your small business name (at least 4 characters).");
+      setFormError("Enter your business name (min 4 characters).");
       return;
     }
     if (bizLocation.trim().length < 3 || bizOffer.trim().length < 3) {
-      setFormError("Please add your campus location and starting price or service offer.");
+      setFormError("Add campus location and starting price/offer.");
       return;
     }
-    if (bizSummary.trim().length < 12) {
-      setFormError("Tell classmates & supporters briefly what your business offers.");
+    if (bizSummary.trim().length < 10) {
+      setFormError("Add a short 1-line summary of what you offer.");
       return;
     }
 
@@ -154,6 +161,7 @@ function OpportunitiesScreen() {
       productsOrServices: services.length > 0 ? services : [bizCategory],
       hiringStudents: bizHiring,
       hiringNote: bizHiring ? bizHiringNote : undefined,
+      imageUrl: bizCover,
     });
 
     setShowListDialog(false);
@@ -171,11 +179,11 @@ function OpportunitiesScreen() {
 
   return (
     <AppShell>
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeader
             title="Student Businesses & Bursaries"
-            subtitle="Discover, support & boost student-owned small businesses alongside verified bursaries — building a circle where peers grow and employ one another."
+            subtitle="Back student-founded ventures & verified bursaries — fueling peer hiring"
           />
           <Button
             onClick={() => {
@@ -188,44 +196,51 @@ function OpportunitiesScreen() {
           </Button>
         </div>
 
-        {/* Peer Commerce & Chain-of-Support Banner */}
-        <section className="grid gap-3 rounded-3xl border border-primary/25 bg-gradient-to-br from-[#132B1F] via-[#183828] to-[#0E2017] p-5 text-white shadow-[var(--shadow-card)] sm:grid-cols-[1.3fr_0.7fr] sm:items-center">
-          <div>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#CEF8A6] px-2.5 py-0.5 text-[11px] font-bold text-[#132B1F]">
-              <Store className="h-3 w-3" /> Chain of Peer Support
-            </span>
-            <h2 className="font-display mt-2.5 text-lg font-bold text-white sm:text-xl">
-              Support a student venture — help classmates earn &amp; hire one another.
-            </h2>
-            <p className="mt-1 text-xs leading-relaxed text-[#D1E3D8]">
-              Order services, boost a student founder to your alumni circle, or team up on orders so
-              campus talent turns into real livelihoods.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-3">
-              <p className="text-xl font-extrabold text-[#CEF8A6] tabular-nums">
-                {studentBusinessCount}
-              </p>
-              <p className="text-[11px] text-[#D1E3D8]">Student ventures</p>
+        {/* Visual Hero Banner */}
+        <section className="relative overflow-hidden rounded-3xl border border-primary/25 bg-[#132B1F] text-white shadow-[var(--shadow-elegant)]">
+          <img
+            src="/assets/edbridge/story_campus_circle.jpg"
+            alt="Makerere student ventures and study circles"
+            className="ken-burns-soft absolute inset-0 h-full w-full object-cover opacity-35"
+          />
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-r from-[#0E2017]/95 via-[#132B1F]/80 to-[#132B1F]/60"
+          />
+          <div className="relative z-10 grid gap-4 p-5 sm:grid-cols-[1.35fr_0.65fr] sm:items-center sm:p-7">
+            <div>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#CEF8A6] px-3 py-1 text-[11px] font-bold text-[#132B1F]">
+                <Store className="h-3 w-3" /> Peer Commerce Chain
+              </span>
+              <h2 className="font-display mt-3 text-xl font-extrabold text-white sm:text-2xl">
+                Support a student business. Help classmates hire each other.
+              </h2>
             </div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-3">
-              <p className="text-xl font-extrabold text-[#CEF8A6] tabular-nums">
-                {peerHiringCount}
-              </p>
-              <p className="text-[11px] text-[#D1E3D8]">Hiring peers</p>
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-md">
+                <p className="font-display text-2xl font-extrabold text-[#CEF8A6] tabular-nums">
+                  {studentBusinessCount}
+                </p>
+                <p className="text-[11px] text-[#D1E3D8]">Live ventures</p>
+              </div>
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-md">
+                <p className="font-display text-2xl font-extrabold text-[#CEF8A6] tabular-nums">
+                  {peerHiringCount}
+                </p>
+                <p className="text-[11px] text-[#D1E3D8]">Hiring peers</p>
+              </div>
             </div>
           </div>
         </section>
 
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search student businesses, food, laptop repairs, bursaries, workshops…"
-            className="h-12 w-full rounded-2xl border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+            placeholder="Search laptop repair, fresh wraps, thesis print, bursaries…"
+            className="h-12 w-full rounded-full border border-border bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
           />
         </div>
 
@@ -236,14 +251,14 @@ function OpportunitiesScreen() {
               type="button"
               onClick={() => setSelectedKind(k)}
               className={cn(
-                "shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors",
+                "shrink-0 rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors",
                 selectedKind === k
-                  ? "border-primary bg-primary/15 text-foreground"
+                  ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-card text-muted-foreground hover:text-foreground",
               )}
             >
               {k === "Training"
-                ? "Financial Literacy & Training"
+                ? "Training Clinics"
                 : k === "Student Business"
                   ? "Student Businesses"
                   : k}
@@ -255,7 +270,7 @@ function OpportunitiesScreen() {
           <EmptyStateCard
             icon={Store}
             title="No matching businesses or bursaries"
-            subtitle="Clear your filter or list your own student small business so classmates and alumni can notice and support you."
+            subtitle="Reset filters or list your own student venture."
             actionLabel="Reset Filters"
             onAction={() => {
               setSelectedKind("All");
@@ -263,7 +278,7 @@ function OpportunitiesScreen() {
             }}
           />
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map((opp) => {
               const isBusiness = opp.kind === "Student Business";
               const isSaved = savedOpportunities.includes(opp.id);
@@ -272,24 +287,37 @@ function OpportunitiesScreen() {
               const isBoosted = Boolean(boostedMap[opp.id]);
               const showWhy = Boolean(whyOpenMap[opp.id]);
               const showEligibility = Boolean(eligibilityOpenMap[opp.id]);
+              const coverImg = opp.imageUrl || "/assets/edbridge/story_campus_circle.jpg";
 
               return (
                 <article
                   key={opp.id}
                   className={cn(
-                    "flex flex-col justify-between rounded-3xl border bg-card p-5 shadow-[var(--shadow-card)] transition-all hover:border-primary/40",
+                    "group flex flex-col overflow-hidden rounded-3xl border bg-card shadow-[var(--shadow-card)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[var(--shadow-elegant)]",
                     isBusiness ? "border-primary/25" : "border-border",
                   )}
                 >
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-2">
+                  {/* Full-bleed Visual Cover Header with Sheen & Hover Zoom */}
+                  <div className="visual-sheen relative h-44 w-full overflow-hidden bg-[#132B1F]">
+                    <img
+                      src={coverImg}
+                      alt={opp.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 bg-gradient-to-t from-[#0E2017]/90 via-[#132B1F]/25 to-transparent"
+                    />
+
+                    {/* Top Floating Badges */}
+                    <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#E8F8EE] px-2.5 py-0.5 text-[11px] font-bold text-[#018749] dark:bg-[#183628] dark:text-[#CEF8A6]">
-                          {isBusiness ? <Store className="h-3 w-3" /> : null}
-                          {opp.kind === "Training" ? "Capacity Development" : opp.kind}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-white/92 px-2.5 py-0.5 text-[11px] font-bold text-[#132B1F] backdrop-blur-md">
+                          {isBusiness ? <Store className="h-3 w-3 text-primary" /> : null}
+                          {opp.kind === "Training" ? "Training" : opp.kind}
                         </span>
                         {opp.hiringStudents ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#132B1F] px-2.5 py-0.5 text-[11px] font-bold text-[#CEF8A6]">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#CEF8A6] px-2.5 py-0.5 text-[11px] font-bold text-[#132B1F]">
                             <Users className="h-3 w-3" /> Hiring Peers
                           </span>
                         ) : null}
@@ -298,193 +326,164 @@ function OpportunitiesScreen() {
                         type="button"
                         onClick={() => toggleSaveOpportunity(opp.id)}
                         aria-label={isSaved ? "Remove bookmark" : "Save item"}
-                        className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
+                        className="flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60"
                       >
                         <Bookmark
-                          className={cn("h-4.5 w-4.5", isSaved && "fill-primary text-primary")}
+                          className={cn("h-4 w-4", isSaved && "fill-[#CEF8A6] text-[#CEF8A6]")}
                         />
                       </button>
                     </div>
 
-                    <h3 className="font-display mt-2.5 text-base font-bold text-foreground">
-                      {opp.title}
-                    </h3>
-                    <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
-                      <span>{opp.fundingPartner ?? opp.org}</span>
-                      <span>·</span>
-                      <span className="inline-flex items-center gap-1">
+                    {/* Bottom Founder / Location Overlay */}
+                    <div className="absolute inset-x-3 bottom-2.5 flex items-center justify-between gap-2 text-white">
+                      <span className="truncate text-xs font-semibold">
+                        {opp.founderLabel ?? opp.fundingPartner ?? opp.org}
+                      </span>
+                      <span className="inline-flex shrink-0 items-center gap-1 text-[11px] text-[#CEF8A6]">
                         <MapPin className="h-3 w-3" /> {opp.location}
                       </span>
-                    </p>
-                    <p className="mt-2.5 text-xs leading-relaxed text-foreground/90">
-                      {opp.summary}
-                    </p>
-
-                    {opp.productsOrServices && opp.productsOrServices.length > 0 ? (
-                      <div className="mt-2.5 flex flex-wrap gap-1.5">
-                        {opp.productsOrServices.map((item) => (
-                          <span
-                            key={item}
-                            className="rounded-full border border-border bg-secondary/70 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
-                          >
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
-
-                    {opp.hiringNote ? (
-                      <div className="mt-2.5 flex items-start gap-2 rounded-2xl bg-[#E8F8EE] px-3 py-2 text-[11px] font-medium text-[#132B1F] dark:bg-[#183628] dark:text-[#CEF8A6]">
-                        <Handshake className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
-                        <span>
-                          <strong>Peer Collaboration:</strong> {opp.hiringNote}
-                        </span>
-                      </div>
-                    ) : null}
-
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
-                      <span className="font-bold text-primary">{opp.compensation}</span>
-                      {isBusiness ? (
-                        <span className="text-[11px] font-medium text-muted-foreground">
-                          {opp.patronsCount ?? 0} patrons · {opp.boostedCount ?? 0} circle boosts
-                        </span>
-                      ) : (
-                        <span
-                          className={cn(
-                            "text-[11px]",
-                            opp.closesInDays <= 7
-                              ? "font-semibold text-[var(--warning)]"
-                              : "text-muted-foreground",
-                          )}
-                        >
-                          Deadline: {opp.deadlineDate ?? `${opp.closesInDays}d`} ({opp.closesInDays}
-                          d left)
-                        </span>
-                      )}
                     </div>
-
-                    <div className="mt-2.5 flex flex-wrap gap-4">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setEligibilityOpenMap((prev) => ({ ...prev, [opp.id]: !prev[opp.id] }))
-                        }
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--success)] hover:underline"
-                      >
-                        <ClipboardList className="h-3.5 w-3.5" />
-                        {showEligibility
-                          ? "Hide details"
-                          : isBusiness
-                            ? "How to support & collaborate"
-                            : "Eligibility, procedure & fair access"}
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setWhyOpenMap((prev) => ({ ...prev, [opp.id]: !prev[opp.id] }))
-                        }
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
-                      >
-                        <Sparkles className="h-3.5 w-3.5" />
-                        {showWhy ? "Hide match reason" : "Why am I seeing this?"}
-                      </button>
-                    </div>
-
-                    {showEligibility ? (
-                      <div className="mt-2.5 space-y-2 rounded-2xl border border-border bg-secondary/40 p-3 text-xs">
-                        {opp.eligibilityCriteria && opp.eligibilityCriteria.length > 0 ? (
-                          <div>
-                            <p className="font-bold text-foreground">
-                              {isBusiness ? "What's Offered:" : "Transparent Eligibility:"}
-                            </p>
-                            <ul className="mt-1 space-y-0.5 text-muted-foreground">
-                              {opp.eligibilityCriteria.map((item) => (
-                                <li key={item}>• {item}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : null}
-
-                        {opp.applicationSteps && opp.applicationSteps.length > 0 ? (
-                          <div>
-                            <p className="font-bold text-foreground">
-                              {isBusiness ? "How Peer Support Works:" : "Application Procedure:"}
-                            </p>
-                            <ol className="mt-1 list-inside list-decimal space-y-0.5 text-muted-foreground">
-                              {opp.applicationSteps.map((step) => (
-                                <li key={step}>{step}</li>
-                              ))}
-                            </ol>
-                          </div>
-                        ) : null}
-
-                        <p className="flex items-start gap-1.5 rounded-xl bg-card/80 p-2 text-[11px] text-muted-foreground">
-                          <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--success)]" />
-                          <span>{opp.fairAccessNotice ?? STANDARD_NON_GUARANTEE_NOTICE}</span>
-                        </p>
-                      </div>
-                    ) : null}
-
-                    {showWhy ? (
-                      <div className="mt-2 rounded-xl bg-primary/10 p-2.5 text-xs text-foreground">
-                        {opp.matchReason}
-                      </div>
-                    ) : null}
                   </div>
 
-                  {isBusiness ? (
-                    <div className="mt-4 grid grid-cols-2 gap-2">
-                      <Button
-                        disabled={isPatronized}
-                        onClick={() => {
-                          setSupportNote("");
-                          setSupportTarget(opp);
-                        }}
-                        className="h-10 text-xs"
-                      >
-                        {isPatronized ? (
-                          <CheckCircle2 className="h-3.5 w-3.5" />
+                  {/* Concise Visual Card Body */}
+                  <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
+                    <div>
+                      <h3 className="font-display text-base font-bold leading-snug text-foreground group-hover:text-primary">
+                        {opp.title}
+                      </h3>
+                      <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                        {opp.summary}
+                      </p>
+
+                      {opp.productsOrServices && opp.productsOrServices.length > 0 ? (
+                        <div className="mt-2.5 flex flex-wrap gap-1.5">
+                          {opp.productsOrServices.slice(0, 3).map((item) => (
+                            <span
+                              key={item}
+                              className="rounded-full border border-border bg-secondary/70 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
+                            >
+                              {item}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+
+                      {opp.hiringNote ? (
+                        <div className="mt-2.5 flex items-center gap-1.5 rounded-xl bg-[#E8F8EE] px-2.5 py-1.5 text-[11px] font-medium text-[#132B1F] dark:bg-[#183628] dark:text-[#CEF8A6]">
+                          <Handshake className="h-3.5 w-3.5 shrink-0 text-primary" />
+                          <span className="truncate">{opp.hiringNote}</span>
+                        </div>
+                      ) : null}
+
+                      <div className="mt-3 flex items-center justify-between gap-2 text-xs">
+                        <span className="font-bold text-primary">{opp.compensation}</span>
+                        {isBusiness ? (
+                          <span className="text-[11px] text-muted-foreground">
+                            {opp.patronsCount ?? 0} patrons · {opp.boostedCount ?? 0} boosts
+                          </span>
                         ) : (
-                          <Handshake className="h-3.5 w-3.5" />
+                          <span className="text-[11px] text-muted-foreground">
+                            {opp.closesInDays}d left
+                          </span>
                         )}
-                        {isPatronized ? "Supported" : "Support / Order"}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        disabled={isBoosted}
-                        onClick={() => {
-                          supportStudentBusiness(opp.id, "boost");
-                          setBoostedMap((prev) => ({ ...prev, [opp.id]: true }));
-                          toast.success(`Boosted ${opp.title} to your circle`);
-                        }}
-                        className="h-10 text-xs"
-                      >
-                        <Megaphone className="h-3.5 w-3.5 text-primary" />
-                        {isBoosted ? "Boosted" : "Boost to Circle"}
-                      </Button>
+                      </div>
+
+                      {/* Subtle Quick Expanders */}
+                      <div className="mt-2.5 flex flex-wrap gap-3 text-[11px]">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEligibilityOpenMap((prev) => ({ ...prev, [opp.id]: !prev[opp.id] }))
+                          }
+                          className="inline-flex items-center gap-1 font-semibold text-[var(--success)] hover:underline"
+                        >
+                          <ClipboardList className="h-3 w-3" />
+                          {showEligibility ? "Hide" : isBusiness ? "Details" : "Eligibility"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setWhyOpenMap((prev) => ({ ...prev, [opp.id]: !prev[opp.id] }))
+                          }
+                          className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"
+                        >
+                          <Sparkles className="h-3 w-3" />
+                          {showWhy ? "Hide" : "Match"}
+                        </button>
+                      </div>
+
+                      {showEligibility ? (
+                        <div className="mt-2 space-y-1.5 rounded-xl border border-border bg-secondary/45 p-2.5 text-[11px] text-muted-foreground">
+                          {opp.eligibilityCriteria?.map((item) => (
+                            <p key={item}>• {item}</p>
+                          ))}
+                          <p className="flex items-start gap-1 pt-1 text-[10px]">
+                            <ShieldCheck className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
+                            <span>{opp.fairAccessNotice ?? STANDARD_NON_GUARANTEE_NOTICE}</span>
+                          </p>
+                        </div>
+                      ) : null}
+
+                      {showWhy ? (
+                        <div className="mt-2 rounded-xl bg-primary/10 p-2 text-[11px] text-foreground">
+                          {opp.matchReason}
+                        </div>
+                      ) : null}
                     </div>
-                  ) : (
-                    <Button
-                      disabled={isApplied}
-                      onClick={() => {
-                        applyOpportunity(opp.id, opp.title);
-                        toast.success("Verified Ed-Bridge profile submitted");
-                      }}
-                      className="mt-4 h-10 w-full text-xs"
-                    >
-                      {isApplied ? (
-                        <CheckCircle2 className="h-4 w-4" />
-                      ) : (
-                        <Send className="h-4 w-4" />
-                      )}
-                      {isApplied
-                        ? "Applied with Verified Profile"
-                        : opp.kind === "Training"
-                          ? "Reserve Seat with Verified Profile"
-                          : "Apply with Verified Profile"}
-                    </Button>
-                  )}
+
+                    {isBusiness ? (
+                      <div className="mt-4 grid grid-cols-2 gap-2">
+                        <Button
+                          disabled={isPatronized}
+                          onClick={() => {
+                            setSupportNote("");
+                            setSupportTarget(opp);
+                          }}
+                          className="h-10 text-xs"
+                        >
+                          {isPatronized ? (
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                          ) : (
+                            <Handshake className="h-3.5 w-3.5" />
+                          )}
+                          {isPatronized ? "Supported" : "Support / Order"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          disabled={isBoosted}
+                          onClick={() => {
+                            supportStudentBusiness(opp.id, "boost");
+                            setBoostedMap((prev) => ({ ...prev, [opp.id]: true }));
+                            toast.success(`Boosted ${opp.title} to your circle`);
+                          }}
+                          className="h-10 text-xs"
+                        >
+                          <Megaphone className="h-3.5 w-3.5 text-primary" />
+                          {isBoosted ? "Boosted" : "Boost"}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        disabled={isApplied}
+                        onClick={() => {
+                          applyOpportunity(opp.id, opp.title);
+                          toast.success("Verified Ed-Bridge profile submitted");
+                        }}
+                        className="mt-4 h-10 w-full text-xs"
+                      >
+                        {isApplied ? (
+                          <CheckCircle2 className="h-4 w-4" />
+                        ) : (
+                          <Send className="h-4 w-4" />
+                        )}
+                        {isApplied
+                          ? "Applied"
+                          : opp.kind === "Training"
+                            ? "Reserve Seat"
+                            : "Apply with Verified Profile"}
+                      </Button>
+                    )}
+                  </div>
                 </article>
               );
             })}
@@ -501,12 +500,35 @@ function OpportunitiesScreen() {
               List Your Student Small Business
             </DialogTitle>
             <DialogDescription>
-              Help classmates, alumni, and partner circles notice, buy from, and boost your student
-              venture — or team up to hire fellow students.
+              Showcase your venture with a visual cover so classmates &amp; alumni can order, boost,
+              or team up.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3 text-xs">
+            {/* Visual Cover Picker */}
+            <div>
+              <label className="font-semibold text-foreground">Cover Visual</label>
+              <div className="mt-1.5 grid grid-cols-4 gap-2">
+                {coverPresets.map((preset) => (
+                  <button
+                    key={preset.url}
+                    type="button"
+                    onClick={() => setBizCover(preset.url)}
+                    className={cn(
+                      "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
+                      bizCover === preset.url ? "border-primary" : "border-border opacity-75",
+                    )}
+                  >
+                    <img src={preset.url} alt={preset.label} className="h-14 w-full object-cover" />
+                    <span className="block truncate px-1.5 py-1 text-[10px] font-semibold text-foreground">
+                      {preset.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div>
               <label className="font-semibold text-foreground">Business Name</label>
               <input
@@ -586,21 +608,21 @@ function OpportunitiesScreen() {
                 type="text"
                 value={bizServicesText}
                 onChange={(e) => setBizServicesText(e.target.value)}
-                placeholder="e.g. Same-day wash & fold, Suit pressing, Hostel pickup"
+                placeholder="e.g. Wash & fold, Suit pressing, Hostel pickup"
                 className="mt-1 h-10 w-full rounded-xl border border-border bg-background px-3 text-xs text-foreground focus:border-primary focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="font-semibold text-foreground">How Supporters Can Help</label>
+              <label className="font-semibold text-foreground">1-Line Summary</label>
               <textarea
-                rows={3}
+                rows={2}
                 value={bizSummary}
                 onChange={(e) => {
                   setBizSummary(e.target.value);
                   setFormError(null);
                 }}
-                placeholder="Describe what you sell/offer, why it helps students, and how customer orders help keep you in school…"
+                placeholder="Quick note on what you offer classmates…"
                 className="mt-1 w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground focus:border-primary focus:outline-none"
               />
             </div>
@@ -614,12 +636,9 @@ function OpportunitiesScreen() {
                   className="mt-0.5 h-4 w-4 accent-primary"
                 />
                 <span>
-                  <strong className="text-foreground">
-                    Open to hiring or collaborating with fellow students
-                  </strong>
+                  <strong className="text-foreground">Open to hiring fellow students</strong>
                   <span className="mt-0.5 block text-[11px] text-muted-foreground">
-                    Highlights a &ldquo;Hiring Peers&rdquo; badge so classmates looking for shifts
-                    or teamwork can connect.
+                    Adds a &ldquo;Hiring Peers&rdquo; badge for campus collaboration.
                   </span>
                 </span>
               </label>
@@ -628,7 +647,7 @@ function OpportunitiesScreen() {
                   type="text"
                   value={bizHiringNote}
                   onChange={(e) => setBizHiringNote(e.target.value)}
-                  placeholder="e.g. Looking for 1–2 student delivery or weekend helpers"
+                  placeholder="e.g. Seeking 1–2 student delivery or weekend helpers"
                   className="mt-2 h-9 w-full rounded-xl border border-border bg-background px-3 text-xs text-foreground focus:border-primary focus:outline-none"
                 />
               ) : null}
@@ -641,7 +660,7 @@ function OpportunitiesScreen() {
             <Button variant="ghost" onClick={() => setShowListDialog(false)}>
               Cancel
             </Button>
-            <Button onClick={handlePublishBusiness}>Publish Small Business</Button>
+            <Button onClick={handlePublishBusiness}>Publish Business</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -654,21 +673,20 @@ function OpportunitiesScreen() {
         <DialogContent className="max-w-md bg-card">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Briefcase className="h-4.5 w-4.5 text-primary" />
+              <Store className="h-4.5 w-4.5 text-primary" />
               Support {supportTarget?.title}
             </DialogTitle>
             <DialogDescription>
-              Connect with {supportTarget?.founderLabel ?? supportTarget?.org} to place an order,
-              sponsor a student voucher, or team up as a peer collaborator.
+              Order from {supportTarget?.founderLabel ?? supportTarget?.org} or refer a peer helper.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-3">
             <textarea
-              rows={3}
+              rows={2}
               value={supportNote}
               onChange={(e) => setSupportNote(e.target.value)}
-              placeholder="e.g. Would like to order 2 study snack packs / connect a classmate for weekend shifts…"
+              placeholder="e.g. Booking diagnostics / ordering 2 study snack packs…"
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
             />
           </div>
@@ -685,7 +703,7 @@ function OpportunitiesScreen() {
                   supportStudentBusiness(supportTarget.id, "refer-peer", supportNote);
                   setPatronizedMap((prev) => ({ ...prev, [supportTarget.id]: true }));
                   setSupportTarget(null);
-                  toast.success("Peer collaboration referral logged in Impact Passport!");
+                  toast.success("Peer collaboration referral logged!");
                 }}
               >
                 Refer / Team Up

@@ -130,6 +130,7 @@ export interface Opportunity {
   hiringStudents?: boolean;
   hiringNote?: string;
   productsOrServices?: string[];
+  imageUrl?: string;
 }
 
 export interface Organization {
